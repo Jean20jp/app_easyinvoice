@@ -1,0 +1,47 @@
+ion-content {
+  --background: white;
+}
+
+.head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12%;
+  background-color: #063970;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  width: 100%;
+}
+
+.title {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Lora";
+  width: auto;
+  text-align: center;
+}
+
+.search {
+  width: 240px;
+  height: 45px;
+  margin-top: 2px;
+  --placeholder-color: black;
+  --border-radius: 10px;
+  --border-color: black;
+}
+
+ion-button {
+  --border-radius: 8px;
+  width: 75px;
+  height: 40px;
+  font-weight: bold;
+  font-size: smaller;
+  --color: white;
+  --background: #063970;
+  --background-activated: #47667b;
+}
+
+.btn-fab {
+  
+}

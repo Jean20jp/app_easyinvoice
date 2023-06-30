@@ -1,13 +1,46 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>gtn-products</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">gtn-products</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="head">
+    <div id="menu">
+      
+    </div>
+    <ion-text class="title">Gestión Productos</ion-text>
+  </div>
+
+  <div class="contentPage">
+
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-searchbar class="search" show-clear-button="focus" placeholder="Buscar.."></ion-searchbar>
+        </ion-col>
+        <ion-col>
+          <ion-button>Vender</ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+
+   <div class="listItems">
+
+
+   </div> 
+
+  </div>
+
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+    <ion-fab-button class="btnFab">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    
+  </ion-fab>
+
+
 </ion-content>
