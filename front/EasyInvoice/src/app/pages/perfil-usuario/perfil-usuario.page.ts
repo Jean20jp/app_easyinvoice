@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { DataSharingService } from '../../services/data-sharing.service';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { ModalController, AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-perfil-usuario',
@@ -13,11 +16,23 @@ export class PerfilUsuarioPage implements OnInit {
   phone!: string;
   email!: string;
 
-  constructor() { }
+  constructor(private dataSharingService: DataSharingService,
+    private http: HttpClient, private modalController: ModalController,
+    private alertController: AlertController,
+    private navCtrl: NavController) { 
+
+    }
 
   ngOnInit() {
   }
 
+  initDataUser() {
+    this.receivedData = this.dataSharingService.getJsonData();
+    this.names = this.receivedData.nombrePers;
+    this.username = this.receivedData.usernamePers;
+    this.phone = this.receivedData.telfPers;
+    this.email = this.receivedData.correoPers;
+  }
   cerrarSesion() {
     
   }
