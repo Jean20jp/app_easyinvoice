@@ -49,3 +49,67 @@ ion-button {
 .itemProd {
   margin-right: 15px;
 }
+
+ion-modal {
+  --height: 70%;
+  --border-radius: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.headModal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 17%;
+  background-color: #063970;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  width: 100%;
+}
+
+.titleModal {
+  color: #f3f3f3;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Lora";
+  width: auto;
+  text-align: center;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #f3f3f3;
+}
+
+.icon-modal {
+  height: 90px;
+  width: 90px;
+  margin-left: 35%;
+  margin-top: 10px;
+}
+
+.gridContent {
+  margin-left: 3%;
+}
+
+.btnModal {
+  --border-radius: 8px;
+  width: 225px;
+  height: 40px;
+  margin-left: 15%;
+  margin-top: 25px;
+  font-weight: bold;
+  font-size: smaller;
+  --color: white;
+  --background: #063970;
+  --background-activated: #47667b;
+}
+
+.inputCant {
+  width: 295px;
+  --background: #f3f3f3;
+  margin-left: 3px;
+}
