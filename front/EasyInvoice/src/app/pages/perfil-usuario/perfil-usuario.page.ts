@@ -15,6 +15,7 @@ export class PerfilUsuarioPage implements OnInit {
   username!: string;
   phone!: string;
   email!: string;
+  direccion!: string;
 
   constructor(private dataSharingService: DataSharingService,
     private http: HttpClient, private modalController: ModalController,
