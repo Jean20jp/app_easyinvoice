@@ -14,7 +14,11 @@ const routes: Routes = [
   {
     path: 'gtn-products',
     loadChildren: () => import('./pages/gtn-products/gtn-products.module').then( m => m.GtnProductsPageModule)
+  },  {
+    path: 'perfil-usuario',
+    loadChildren: () => import('./pages/perfil-usuario/perfil-usuario.module').then( m => m.PerfilUsuarioPageModule)
   },
+
 
 
 ];

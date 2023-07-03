@@ -1,0 +1,74 @@
+<ion-content>
+
+  <div class="head">
+    <div id="menu">
+      
+    </div>
+    <ion-text class="title">Perfil de Usuario</ion-text>
+  </div>
+    
+      
+   
+    
+      <div class="contentUser">
+        <ion-icon name="person-circle-outline" size="large" color="light" class="logo"></ion-icon>
+
+        
+
+        <ion-grid style="--ion-grid-padding: 0;">
+          <ion-row style="margin-bottom: 15px;">
+            <ion-col size="auto">
+              <ion-text style="color: black; width: auto; ">Nombre tienda</ion-text>
+            </ion-col>
+          </ion-row>
+    
+          <ion-row style="margin-bottom: 15px;">
+            <ion-col size="auto" >
+              <ion-text style="color: black; width: auto;">Nombres de usuario: {{ username }}</ion-text>
+            </ion-col>
+            <ion-col class="custom-col">
+              <ion-text (click)="editUsername()" style="cursor: pointer; text-decoration: underline;
+                        color: #063940;">editar</ion-text>
+            </ion-col>
+          </ion-row>
+    
+          <ion-row style="margin-bottom: 15px;">
+            <ion-col size="auto">
+              <ion-text style="color: black; width: auto;">Teléfono: {{ phone }}</ion-text>
+            </ion-col>
+            <ion-col class="custom-col">
+              <ion-text (click)="editPhone()" style="cursor: pointer; text-decoration: underline;
+                        color: #063940;">editar</ion-text>
+            </ion-col>
+          </ion-row>
+    
+          <ion-row style="margin-bottom: 30px;">
+            <ion-col size="auto">
+              <ion-text style="color: black; width: auto;">Correo Electrónico: {{ email }}</ion-text>
+            </ion-col>
+            <ion-col class="custom-col">
+              <ion-text (click)="editEmail()" style="cursor: pointer; text-decoration: underline;
+              color: #063940;">editar</ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row style="margin-bottom: 15px;">
+            <ion-col size="auto" >
+              <ion-text style="color: black; width: auto;">Direccion usuario: {{ username }}</ion-text>
+            </ion-col>
+            <ion-col class="custom-col">
+              <ion-text (click)="editUsername()" style="cursor: pointer; text-decoration: underline;
+                        color: #063940;">editar</ion-text>
+            </ion-col>
+          </ion-row>
+    
+          <ion-row >
+            <ion-col >
+              <ion-button id="open-modal" >Cambiar contraseña</ion-button>
+            </ion-col>
+          </ion-row>
+    
+        </ion-grid>
+      </div>
+</ion-content>
+
