@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
 
-        UsuarioModel findByNomb_usuarioAndContrasenia(String nombUsuario, String contrasenia);
+        //UsuarioModel findByNomb_usuarioAndContrasenia(String nomb_usuario, String contrasenia);
 
 
 }

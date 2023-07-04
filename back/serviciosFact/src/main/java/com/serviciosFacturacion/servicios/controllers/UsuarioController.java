@@ -1,5 +1,6 @@
 package com.serviciosFacturacion.servicios.controllers;
 
+import com.serviciosFacturacion.servicios.dto.LoginParamsDTO;
 import com.serviciosFacturacion.servicios.models.UsuarioModel;
 import com.serviciosFacturacion.servicios.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class UsuarioController {
     }
 
     // Inicio de sesión
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String nombUsuario, @RequestParam String contrasenia) {
         UsuarioModel usuario = usuarioRepository.findByNomb_usuarioAndContrasenia(nombUsuario, contrasenia);
         if (usuario != null) {
@@ -84,5 +85,18 @@ public class UsuarioController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
-    }
+    }*/
+
+    /*@PostMapping("/login")
+    public ResponseEntity<UsuarioModel> login(@RequestBody LoginParamsDTO loginParams) {
+        String nomb_usuario = loginParams.getUsername();
+        String contrasenia = loginParams.getPassword();
+
+        UsuarioModel usuario = usuarioRepository.findByNomb_usuarioAndContrasenia(nomb_usuario, contrasenia);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }*/
 }
