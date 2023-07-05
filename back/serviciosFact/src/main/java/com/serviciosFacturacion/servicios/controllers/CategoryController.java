@@ -13,7 +13,7 @@ import java.util.Optional;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
-    @GetMapping
+    @GetMapping("/get-category")
     public ArrayList<CategoryModel> getCategories(){
         return this.categoryService.getCategories();
     }
@@ -28,19 +28,19 @@ public class CategoryController {
         return  this.categoryService.getById(id_categ);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(value = "/modif-category/{id}", path = "/modif-category/{id}")
     public CategoryModel updateCategoryById(@RequestBody CategoryModel request,@PathVariable("id") Long id_categ){
         return this.categoryService.updateById(request, id_categ);
 
     }
 
 
-
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(value = "/delete-category/{id}", path = "/delete-category/{id}")
+    //@DeleteMapping(path = "/{id}")
     public String deleteById(@PathVariable("id") Long id_categ){
         boolean ok = this.categoryService.deleteCategory(id_categ);
         if (ok){
-            return  "Iva with id" + id_categ + "delete";
+            return  "Iva with id" + id_categ + " delete";
         }else{
             return "Error, we have a problem";
 
