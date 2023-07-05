@@ -34,7 +34,7 @@ public class CategoryController {
 
     }
 
-
+    //aaa
     @DeleteMapping(value = "/delete-category/{id}", path = "/delete-category/{id}")
     //@DeleteMapping(path = "/{id}")
     public String deleteById(@PathVariable("id") Long id_categ){
