@@ -2,7 +2,7 @@
 
   <div class="head">
     <div id="menu">
-      
+      <ion-menu-button></ion-menu-button>
     </div>
     <ion-text class="title">Gestión Productos</ion-text>
   </div>
@@ -59,7 +59,7 @@
   </div>
 
   <ion-fab slot="fixed" horizontal="end" vertical="bottom">
-    <ion-fab-button class="btnFab">
+    <ion-fab-button class="btnFab" (click)="addProducts()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

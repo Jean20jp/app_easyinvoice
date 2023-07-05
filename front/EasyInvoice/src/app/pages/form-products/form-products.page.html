@@ -3,7 +3,10 @@
 
 
   <div class="head">
-    <ion-text class="title">Gestión Productos</ion-text>
+    <div>
+      <ion-icon class="iconBack" name="chevron-back-outline" (click)="goBack()"></ion-icon>
+    </div>
+    <ion-text class="title">{{title}}</ion-text>
   </div>
 
   <div class="content">
@@ -11,28 +14,28 @@
       <ion-row>
         <ion-col>
           <ion-item class="inputBig">
-            <ion-input clearInput  [(ngModel)]="cod_prod" type="text" placeholder="Código del producto"></ion-input>
+            <ion-input clearInput [(ngModel)]="codigo_barras" type="text" placeholder="Código del producto"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item class="inputBig">
-            <ion-input clearInput [(ngModel)]="cod_prod" type="text" placeholder="Nombre del producto"></ion-input>
+            <ion-input clearInput [(ngModel)]="nom_producto" type="text" placeholder="Nombre del producto"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item class="inputBig">
-            <ion-input clearInput [(ngModel)]="cod_prod" type="text" placeholder="Descripción del producto"></ion-input>
+            <ion-input clearInput [(ngModel)]="descrip_prod" type="text" placeholder="Descripción del producto"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item class="inputSmall">
-            <ion-input clearInput [(ngModel)]="cod_prod" type="numeric" placeholder="Precio"></ion-input>
+            <ion-input clearInput [(ngModel)]="precio" type="numeric" placeholder="Precio"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
@@ -45,7 +48,7 @@
           <ion-col>
             <ion-item class="inputSelectSmall">
               <ion-select interface="popover" placeholder="Categoría" style="margin-top: -10px; margin-bottom: -10px;" [(ngModel)]="selectedOption">
-                <ion-select-option *ngFor="let option of options" [value]="option">{{option}}</ion-select-option>
+                <ion-select-option *ngFor="let option of optionsCateg" [value]="option">{{option}}</ion-select-option>
               </ion-select>
               <ion-icon name="close-circle" (click)="clearSelection()" *ngIf="selectedOption"></ion-icon>
             </ion-item>
@@ -54,21 +57,11 @@
             <ion-icon class="iconAdd" name="add-outline"></ion-icon>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-item class="inputSelectBig">
-              <ion-select interface="popover" placeholder="Subcategoría" style="margin-top: -10px; margin-bottom: -10px;" [(ngModel)]="selectedOption">
-                <ion-select-option *ngFor="let option of options" [value]="option">{{option}}</ion-select-option>
-              </ion-select>
-              <ion-icon name="close-circle" (click)="clearSelection()" *ngIf="selectedOption"></ion-icon>
-            </ion-item>
-          </ion-col>
-        </ion-row>
         <ion-row style="margin-top: 10px;">
           <ion-col>
             <ion-item class="inputSelectSmall">
               <ion-select interface="popover" placeholder="IVA" style="margin-top: -10px; margin-bottom: -10px;" [(ngModel)]="selectedOption">
-                <ion-select-option *ngFor="let option of options" [value]="option">{{option}}</ion-select-option>
+                <ion-select-option *ngFor="let option of optionsIva" [value]="option">{{option}}</ion-select-option>
               </ion-select>
               <ion-icon name="close-circle" (click)="clearSelection()" *ngIf="selectedOption"></ion-icon>
             </ion-item>
@@ -81,7 +74,7 @@
           <ion-col>
             <ion-item class="inputSelectSmall">
               <ion-select interface="popover" placeholder="Promoción" style="margin-top: -10px; margin-bottom: -10px;" [(ngModel)]="selectedOption">
-                <ion-select-option *ngFor="let option of options" [value]="option">{{option}}</ion-select-option>
+                <ion-select-option *ngFor="let option of optionsProm" [value]="option">{{option}}</ion-select-option>
               </ion-select>
               <ion-icon name="close-circle" (click)="clearSelection()" *ngIf="selectedOption"></ion-icon>
             </ion-item>
@@ -92,7 +85,7 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-button class="btnVender">Crear producto </ion-button>
+            <ion-button class="btnVender">{{nameBtn}} </ion-button>
           </ion-col>
         </ion-row>
 

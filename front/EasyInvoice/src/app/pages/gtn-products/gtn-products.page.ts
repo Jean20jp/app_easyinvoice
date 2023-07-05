@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { AlertController } from '@ionic/angular';
-import { ModalController } from '@ionic/angular';
+import { ToastController, NavController, AlertController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gtn-products',
@@ -21,7 +19,7 @@ export class GtnProductsPage implements OnInit {
   precio!: string;
 
   showBackdrop: boolean = false;
-  
+
   items: any[] = [
     { id: 1, name: 'Item 1', description: 'Descripción del Item 1' },
     { id: 2, name: 'Item 2', description: 'Descripción del Item 2' },
@@ -30,14 +28,23 @@ export class GtnProductsPage implements OnInit {
 
   selectedItems: any[] = [];
 
+
+
   constructor(private toastController: ToastController, private http: HttpClient,
-    private alertController: AlertController, private modalController: ModalController) {
+    private alertController: AlertController, private modalController: ModalController, private navCtrl: NavController) {
 
     //this.items = [];
 
-   }
+  }
 
-   selectItem(item: any) {
+  addProducts() {
+    const title = "Nuevo Producto";
+    const nameBtn = "Crear Producto";
+    const bandera = true;
+    this.navCtrl.navigateForward(`/form-products/${title}/${nameBtn}/${bandera}`);
+  }
+
+  selectItem(item: any) {
     const index = this.selectedItems.indexOf(item);
     if (index > -1) {
       this.selectedItems.splice(index, 1); // Deseleccionar elemento si ya está seleccionado
@@ -59,7 +66,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   loadDataList() {
-    
+
   }
 
   getItems(): Observable<any[]> {

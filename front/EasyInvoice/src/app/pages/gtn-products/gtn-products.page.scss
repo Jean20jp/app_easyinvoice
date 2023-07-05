@@ -22,6 +22,14 @@ ion-content {
   text-align: center;
 }
 
+ion-menu-button {
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  font-size: 42px;
+  color: white;
+}
+
 .search {
   width: 240px;
   height: 45px;

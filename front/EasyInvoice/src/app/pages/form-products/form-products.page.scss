@@ -18,6 +18,15 @@
   margin-bottom: 20px;
 }
 
+.iconBack {
+  color: white;
+  position: absolute;
+  top: 23px;
+  left: 25px;
+  font-size: 42px;
+  color: white;
+}
+
 .title {
   color: white;
   font-size: 20px;
@@ -56,9 +65,10 @@ ion-grid {
 
 .inputNum {
   width: 150px;
+  height: 59px;
   --background: #3d648d;
   border: 2px solid white;
-  border-radius: 12px;
+  border-radius: 14px;
 }
 
 .inputSelectSmall {
@@ -88,13 +98,13 @@ ion-grid {
 }
 
 .btnVender {
-    --border-radius: 10px;
-    width: 355px;
-    height: 45px;
-    font-weight: bold;
-    font-size: medium;
-    margin-top: 10px;
-    --color: white;
-    --background: #063970;
-    --background-activated: #2b3e4a;
+  --border-radius: 10px;
+  width: 355px;
+  height: 45px;
+  font-weight: bold;
+  font-size: medium;
+  margin-top: 10px;
+  --color: white;
+  --background: #063970;
+  --background-activated: #2b3e4a;
 }
