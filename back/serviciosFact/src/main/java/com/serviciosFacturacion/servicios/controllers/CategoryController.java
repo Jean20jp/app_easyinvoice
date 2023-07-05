@@ -11,6 +11,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
+    // Metodos Servicio CRUD
     @Autowired
     private CategoryService categoryService;
     @GetMapping("/get-category")
@@ -27,7 +28,7 @@ public class CategoryController {
     public Optional<CategoryModel> getIvaById(@PathVariable("id") Long id_categ ){
         return  this.categoryService.getById(id_categ);
     }
-
+    //
     @PutMapping(value = "/modif-category/{id}", path = "/modif-category/{id}")
     public CategoryModel updateCategoryById(@RequestBody CategoryModel request,@PathVariable("id") Long id_categ){
         return this.categoryService.updateById(request, id_categ);
