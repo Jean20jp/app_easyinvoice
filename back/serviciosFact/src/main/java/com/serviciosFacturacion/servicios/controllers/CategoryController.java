@@ -18,7 +18,7 @@ public class CategoryController {
         return this.categoryService.getCategories();
     }
 
-    @PostMapping
+    @PostMapping("/save-category")
     public  CategoryModel saveCategory(@RequestBody CategoryModel  category){
         return this.categoryService.saveCategory(category);
     }
