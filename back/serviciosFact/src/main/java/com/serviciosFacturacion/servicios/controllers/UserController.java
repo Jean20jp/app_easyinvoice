@@ -2,6 +2,7 @@ package com.serviciosFacturacion.servicios.controllers;
 
 import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
+import com.serviciosFacturacion.servicios.repositories.IUserRepository;
 import com.serviciosFacturacion.servicios.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
