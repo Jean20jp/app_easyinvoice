@@ -1,5 +1,6 @@
 package com.serviciosFacturacion.servicios.services;
 
+import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
 import com.serviciosFacturacion.servicios.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,11 @@ public class UserService {
             return  false;
         }
     }
+
+    public Optional<UserModel> getUserByEmail(String email_usuario) {
+        return userRepository.findByEmail_usuario(email_usuario);
+    }
+
 
 
 }

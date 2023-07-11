@@ -1,8 +1,11 @@
 package com.serviciosFacturacion.servicios.controllers;
 
+import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
 import com.serviciosFacturacion.servicios.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -50,6 +53,24 @@ public class UserController {
             return "Error, we have a problem";
 
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+        // Obtener el usuario por su dirección de correo electrónico
+        Optional<UserModel> optionalUser = userService.getUserByEmail(loginRequest.getEmail_usuario());
+
+        if (optionalUser.isPresent()) {
+            UserModel user = optionalUser.get();
+            // Verificar la contraseña del usuario
+            if (user.getContrasenia().equals(loginRequest.getContrasenia())) {
+                // Autenticación exitosa
+                return ResponseEntity.ok("Inicio de sesión exitoso");
+            }
+        }
+
+        // Credenciales inválidas
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo electrónico o contraseña inválidos");
     }
 
 }
