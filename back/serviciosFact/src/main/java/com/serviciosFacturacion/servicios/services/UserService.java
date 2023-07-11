@@ -65,9 +65,7 @@ public class UserService {
         }
     }
 
-    public Optional<UserModel> getUserByEmail(String email_usuario) {
-        return userRepository.findByEmail_usuario(email_usuario);
-    }
+
 
 
 

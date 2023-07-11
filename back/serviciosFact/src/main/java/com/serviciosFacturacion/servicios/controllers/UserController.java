@@ -55,22 +55,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
-        // Obtener el usuario por su dirección de correo electrónico
-        Optional<UserModel> optionalUser = userService.getUserByEmail(loginRequest.getEmail_usuario());
 
-        if (optionalUser.isPresent()) {
-            UserModel user = optionalUser.get();
-            // Verificar la contraseña del usuario
-            if (user.getContrasenia().equals(loginRequest.getContrasenia())) {
-                // Autenticación exitosa
-                return ResponseEntity.ok("Inicio de sesión exitoso");
-            }
-        }
-
-        // Credenciales inválidas
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo electrónico o contraseña inválidos");
-    }
 
 }
