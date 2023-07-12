@@ -15,8 +15,6 @@ const routes: Routes = [
     path: 'gtn-products',
     loadChildren: () => import('./pages/gtn-products/gtn-products.module').then( m => m.GtnProductsPageModule)
   },
-
-
 ];
 
 @NgModule({
