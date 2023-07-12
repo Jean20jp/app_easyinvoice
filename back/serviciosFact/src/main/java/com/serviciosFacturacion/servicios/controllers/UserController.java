@@ -58,14 +58,15 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<UserModel> login(@RequestBody LoginRequest loginRequest) {
         // Verificar las credenciales del usuario
-        boolean isAuthenticated = userService.authenticateUser(loginRequest.getEmail_usuario(), loginRequest.getContrasenia());
+        UserModel user = userService.authenticateUser(loginRequest.getEmail_usuario(), loginRequest.getContrasenia());
 
-        if (isAuthenticated) {
-            return new ResponseEntity<>("Inicio de sesión exitoso", HttpStatus.OK);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Credenciales inválidas", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
 }

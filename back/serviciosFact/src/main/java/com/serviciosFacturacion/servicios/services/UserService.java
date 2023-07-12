@@ -76,20 +76,30 @@ public class UserService {
     }
 
 
-    public boolean authenticateUser(String email, String password) {
-        String query = "SELECT contrasenia FROM usuario WHERE email_usuario = ?";
+    public UserModel authenticateUser(String email, String password) {
+        String query = "SELECT * FROM usuario WHERE email_usuario = ?";
 
         try {
-            String storedPassword = jdbcTemplate.queryForObject(query, new Object[]{email}, String.class);
-
-            if (storedPassword.equals(password)) {
-                return true; // Credenciales válidas
-            }
+            return jdbcTemplate.queryForObject(query, new Object[]{email}, (rs, rowNum) -> {
+                UserModel user = new UserModel();
+                user.setId_usuario(rs.getLong("id_usuario"));
+                user.setId_tip_dni(rs.getInt("id_tip_dni"));
+                user.setId_establ_per(rs.getInt("id_establ_per"));
+                user.setNum_ident(rs.getString("num_ident"));
+                user.setNomb_usuario(rs.getString("nomb_usuario"));
+                user.setApell_usuario(rs.getString("apell_usuario"));
+                user.setEmail_usuario(rs.getString("email_usuario"));
+                user.setTelef_usuario(rs.getString("telef_usuario"));
+                user.setDirec_usuario(rs.getString("direc_usuario"));
+                user.setEstado_usuario(rs.getByte("estado_usuario"));
+                user.setTip_usuario(rs.getByte("tip_usuario"));
+                user.setContrasenia(rs.getString("contrasenia"));
+                user.setFoto(rs.getByte("foto"));
+                return user;
+            });
         } catch (EmptyResultDataAccessException e) {
-            // Usuario no encontrado
+            return null; // Usuario no encontrado
         }
-
-        return false; // Credenciales inválidas
     }
 
 
