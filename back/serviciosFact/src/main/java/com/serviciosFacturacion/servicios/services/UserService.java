@@ -4,6 +4,8 @@ import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
 import com.serviciosFacturacion.servicios.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,6 +17,14 @@ public class UserService {
     @Autowired
     IUserRepository userRepository;
 
+
+    private final JdbcTemplate jdbcTemplate;
+
+
+    @Autowired
+    public UserService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
     public ArrayList<UserModel> getUsers(){
         return (ArrayList<UserModel>) userRepository.findAll();
     }
@@ -63,6 +73,23 @@ public class UserService {
         }catch (Exception e){
             return  false;
         }
+    }
+
+
+    public boolean authenticateUser(String email, String password) {
+        String query = "SELECT contrasenia FROM usuario WHERE email_usuario = ?";
+
+        try {
+            String storedPassword = jdbcTemplate.queryForObject(query, new Object[]{email}, String.class);
+
+            if (storedPassword.equals(password)) {
+                return true; // Credenciales válidas
+            }
+        } catch (EmptyResultDataAccessException e) {
+            // Usuario no encontrado
+        }
+
+        return false; // Credenciales inválidas
     }
 
 
