@@ -1,8 +1,11 @@
 package com.serviciosFacturacion.servicios.services;
 
+import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
 import com.serviciosFacturacion.servicios.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +17,14 @@ public class UserService {
     @Autowired
     IUserRepository userRepository;
 
+
+    private final JdbcTemplate jdbcTemplate;
+
+
+    @Autowired
+    public UserService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
     public ArrayList<UserModel> getUsers(){
         return (ArrayList<UserModel>) userRepository.findAll();
     }
@@ -61,6 +72,33 @@ public class UserService {
             return  true;
         }catch (Exception e){
             return  false;
+        }
+    }
+
+
+    public UserModel authenticateUser(String email, String password) {
+        String query = "SELECT * FROM usuario WHERE email_usuario = ?";
+
+        try {
+            return jdbcTemplate.queryForObject(query, new Object[]{email}, (rs, rowNum) -> {
+                UserModel user = new UserModel();
+                user.setId_usuario(rs.getLong("id_usuario"));
+                user.setId_tip_dni(rs.getInt("id_tip_dni"));
+                user.setId_establ_per(rs.getInt("id_establ_per"));
+                user.setNum_ident(rs.getString("num_ident"));
+                user.setNomb_usuario(rs.getString("nomb_usuario"));
+                user.setApell_usuario(rs.getString("apell_usuario"));
+                user.setEmail_usuario(rs.getString("email_usuario"));
+                user.setTelef_usuario(rs.getString("telef_usuario"));
+                user.setDirec_usuario(rs.getString("direc_usuario"));
+                user.setEstado_usuario(rs.getByte("estado_usuario"));
+                user.setTip_usuario(rs.getByte("tip_usuario"));
+                user.setContrasenia(rs.getString("contrasenia"));
+                user.setFoto(rs.getByte("foto"));
+                return user;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null; // Usuario no encontrado
         }
     }
 

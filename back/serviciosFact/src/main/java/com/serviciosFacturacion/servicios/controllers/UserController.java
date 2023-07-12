@@ -1,8 +1,12 @@
 package com.serviciosFacturacion.servicios.controllers;
 
+import com.serviciosFacturacion.servicios.models.LoginRequest;
 import com.serviciosFacturacion.servicios.models.UserModel;
+import com.serviciosFacturacion.servicios.repositories.IUserRepository;
 import com.serviciosFacturacion.servicios.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,6 +53,19 @@ public class UserController {
         }else{
             return "Error, we have a problem";
 
+        }
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<UserModel> login(@RequestBody LoginRequest loginRequest) {
+        // Verificar las credenciales del usuario
+        UserModel user = userService.authenticateUser(loginRequest.getEmail_usuario(), loginRequest.getContrasenia());
+
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
