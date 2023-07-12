@@ -31,9 +31,11 @@ ion-menu-button {
 }
 
 .search {
-  width: 240px;
+  width: 260px;
   height: 45px;
   margin-top: 2px;
+  margin-left: -20px;
+  text-align: left;
   --placeholder-color: black;
   --border-radius: 10px;
   --border-color: black;
@@ -59,17 +61,24 @@ ion-button {
 }
 
 ion-modal {
-  --height: 70%;
+  --height: 60%;
   --border-radius: 30px;
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.modalForm {
+  --height: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+  --border-radius: 0px;
 }
 
 .headModal {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 17%;
+  height: 12%;
   background-color: #063970;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
@@ -90,6 +99,13 @@ ion-modal {
   flex-direction: column;
   height: 100%;
   background-color: #f3f3f3;
+}
+
+.modalContentForm {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #3d648d;
 }
 
 .icon-modal {
@@ -120,4 +136,86 @@ ion-modal {
   width: 295px;
   --background: #f3f3f3;
   margin-left: 3px;
+}
+
+.iconBack {
+  color: white;
+  position: absolute;
+  top: 23px;
+  left: 25px;
+  font-size: 42px;
+  color: white;
+}
+
+.title {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Lora";
+  width: auto;
+  text-align: center;
+}
+
+ion-grid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.inputBig {
+  border-radius: 15px;
+  margin-bottom: 10px;
+  width: 360px;
+  --background: #3d648d;
+  border: 2px solid white;
+  --border-color: transparent;
+}
+
+.inputSmall {
+  border-radius: 15px;
+  margin-bottom: 10px;
+  width: 170px;
+  margin-right: 27px;
+  --background: #3d648d;
+  border: 2px solid white;
+  margin-left: -3px;
+}
+
+.inputNum {
+  width: 150px;
+  height: 48px;
+  --background: #3d648d;
+  border: 2px solid white;
+  border-radius: 14px;
+}
+
+.inputSelectSmall {
+  width: 290px;
+  height: 46px;
+  border-radius: 12px;
+  border: 2px solid white;
+  --background: #3d648d;
+  margin-left: -10px;
+}
+
+.iconAdd {
+  color: white;
+  height: 43px;
+  width: 43px;
+  margin-top: 2px;
+  margin-left: 6px;
+}
+
+.btnVender {
+  --border-radius: 10px;
+  width: 355px;
+  height: 45px;
+  font-weight: bold;
+  font-size: medium;
+  margin-top: 10px;
+  --color: white;
+  --background: #063970;
+  --background-activated: #2b3e4a;
 }

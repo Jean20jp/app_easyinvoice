@@ -15,10 +15,6 @@ const routes: Routes = [
     path: 'gtn-products',
     loadChildren: () => import('./pages/gtn-products/gtn-products.module').then( m => m.GtnProductsPageModule)
   },
-  {
-    path: 'form-products/:title/:nameBtn/:bandera',
-    loadChildren: () => import('./pages/form-products/form-products.module').then( m => m.FormProductsPageModule)
-  },
 ];
 
 @NgModule({

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ToastController, NavController, AlertController, ModalController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
+import { ToastController, NavController, AlertController, ModalController, IonModal } from '@ionic/angular';
 
 @Component({
   selector: 'app-gtn-products',
@@ -18,6 +19,9 @@ export class GtnProductsPage implements OnInit {
   unidades_dispon!: string;
   precio!: string;
 
+  @ViewChild('modalForm') modalForm!: IonModal;
+  @ViewChild('modalDtProd') modalDtProd!: IonModal;
+
   showBackdrop: boolean = false;
 
   items: any[] = [
@@ -28,20 +32,49 @@ export class GtnProductsPage implements OnInit {
 
   selectedItems: any[] = [];
 
+  titleModalForm!: string;
+  nameBtnModalForm!: string;
 
+  optionsCateg!: any[];
+  optionsIva!: any[];
+  optionsProm!: any[];
+  selectedOption: any;
 
-  constructor(private toastController: ToastController, private http: HttpClient,
+  constructor(private toastController: ToastController, private http: HttpClient, private route: ActivatedRoute,
     private alertController: AlertController, private modalController: ModalController, private navCtrl: NavController) {
 
-    //this.items = [];
+      this.recoverCategories();
+      this.recoverCategIva();
+      this.recoverCategProm();
 
   }
 
+  openModalForm() {
+    this.modalForm.present();
+  }
+
+  closeModalForm() {
+    this.modalForm.dismiss()
+  }
+
+  openModalDtProd() {
+    this.modalDtProd.present();
+  }
+
+  closeModalDtProd() {
+    this.modalDtProd.dismiss()
+  }
+
   addProducts() {
-    const title = "Nuevo Producto";
-    const nameBtn = "Crear Producto";
-    const bandera = true;
-    this.navCtrl.navigateForward(`/form-products/${title}/${nameBtn}/${bandera}`);
+    this.titleModalForm = "Nuevo Producto";
+    this.nameBtnModalForm = "Crear Producto";
+    this.openModalForm();
+  }
+
+  updateProducts() {
+    this.titleModalForm = "Modificar Producto";
+    this.nameBtnModalForm = "Modificar Producto";
+    this.openModalForm();
   }
 
   selectItem(item: any) {
@@ -63,6 +96,71 @@ export class GtnProductsPage implements OnInit {
   }
 
   ngOnInit() {
+    
+  }
+
+  recoverCategories() {
+    const url = "http://localhost:8080/category";
+    this.http.get<any[]>(url).subscribe(
+      (response) => {
+        if (response !== null) {
+          this.optionsCateg = this.cleanOptions(response, "nom_categ");
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar ciudades:', error);
+      }
+    );
+  }
+
+  recoverCategIva() {
+    const url = "http://localhost:8080/iva";
+    this.http.get<any[]>(url).subscribe(
+      (response) => {
+        if (response !== null) {
+          this.optionsIva = this.cleanOptions(response, "nomb_categ_iva");
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar ciudades:', error);
+      }
+    );
+  }
+
+  recoverCategProm() {
+    const url = "http://localhost:8080/promotion";
+    this.http.get<any[]>(url).subscribe(
+      (response) => {
+        if (response !== null) {
+          this.optionsProm = this.cleanOptions(response, "nom_prom");
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar ciudades:', error);
+      }
+    );
+  }
+
+  cleanOptions(response: any, propertyName: string): any[] {
+    const listCities: any[] = [];
+    const seenProperties: Set<any> = new Set();
+    for (const json of response) {
+      const property = json[propertyName];
+      if (!seenProperties.has(property)) {
+        seenProperties.add(property);
+        listCities.push(property);
+      }
+    }
+    return listCities;
+  }
+
+
+  clearSelection() {
+    this.selectedOption = null;
+  }
+
+  goBack() {
+    this.closeModalForm();
   }
 
   loadDataList() {
@@ -80,7 +178,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   editItem(item: any) {
-
+    this.updateProducts()
   }
 
   toggleBackdrop() {
