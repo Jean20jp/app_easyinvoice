@@ -48,15 +48,15 @@ export class LoginPage implements OnInit {
   }
 
   ingresar() {
-    const username = this.username;
+    const email = this.username;
     const password = this.password;
-    const url = 'link del servicio';
+    const url = 'http://localhost:8080/user/login';
     
-    if (this.isEmptyInput(username, password)) {
+    if (this.isEmptyInput(email, password)) {
       
       const credentials = JSON.stringify({
-        username: username,
-        password: password,
+        email_usuario: email,
+        contrasenia: password,
       });
       
       const headers = {
@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
               console.log(response.body);
               this.toSendData(response.body);
               this.clearInput();
-              this.navCtrl.navigateForward('/home');
+              this.navCtrl.navigateForward('/gtn-products');
             } catch (error) {
               console.error('Error al procesar la respuesta:', error);
             }
@@ -82,6 +82,8 @@ export class LoginPage implements OnInit {
         },
         (error) => {
           console.error(error);
+          this.clearInput();
+          this.wrongCredentials.markAsTouched();
         }
       );
     } 
