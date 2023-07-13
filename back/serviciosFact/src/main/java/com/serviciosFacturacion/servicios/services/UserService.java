@@ -77,10 +77,10 @@ public class UserService {
 
 
     public UserModel authenticateUser(String email, String password) {
-        String query = "SELECT * FROM usuario WHERE email_usuario = ?";
+        String query = "SELECT * FROM usuario WHERE email_usuario = ? and contrasenia = ?";
 
         try {
-            return jdbcTemplate.queryForObject(query, new Object[]{email}, (rs, rowNum) -> {
+            return jdbcTemplate.queryForObject(query, new Object[]{email, password}, (rs, rowNum) -> {
                 UserModel user = new UserModel();
                 user.setId_usuario(rs.getLong("id_usuario"));
                 user.setId_tip_dni(rs.getInt("id_tip_dni"));

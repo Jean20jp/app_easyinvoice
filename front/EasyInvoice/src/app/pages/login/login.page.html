@@ -35,7 +35,7 @@
           <ion-col>
             <ion-item>
               <ion-icon name="person-circle-outline"></ion-icon>
-              <ion-input clearInput  [(ngModel)]="username" type="text" placeholder="Ingrese nombre de usuario"></ion-input>
+              <ion-input clearInput  [(ngModel)]="username" type="email" placeholder="Ingrese correo electrónico"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -51,7 +51,7 @@
 
         <ion-row>
           <ion-col>
-            <ion-button>Ingresar</ion-button>
+            <ion-button (click)="ingresar()">Ingresar</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>

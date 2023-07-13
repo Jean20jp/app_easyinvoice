@@ -41,7 +41,6 @@ public class UserController {
     @PutMapping(path = "/{id}")
     public UserModel updateUserById(@RequestBody UserModel request,@PathVariable("id") Long id_usuario){
         return this.userService.updateById(request, id_usuario);
-
     }
 
 
