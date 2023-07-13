@@ -6,7 +6,7 @@
     <ion-text class="title">Gestión Productos</ion-text>
   </div>
 
-  <div class="contentPage">
+  <div>
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -14,6 +14,7 @@
             class="search"
             show-clear-button="focus"
             placeholder="Buscar.."
+            (ionInput)="onSearchChange($event)"
           ></ion-searchbar>
         </ion-col>
         <ion-col>
@@ -35,7 +36,7 @@
         <ion-item-sliding *ngFor="let item of items" (press)="selectItem(item)">
           <ion-item
             class="itemProd"
-            (click)="openModalDtProd()"
+            (click)="openModalDtProd(item)"
             [class.selected]="isSelected(item)"
           >
             <div class="imgIcon">
@@ -45,8 +46,8 @@
               ></ion-img>
             </div>
             <ion-label>
-              <h2>{{ item.name }}</h2>
-              <p>{{ item.description }}</p>
+              <h2>{{ item.nom_producto }}</h2>
+              <p>{{ item.precio }}</p>
             </ion-label>
           </ion-item>
 
@@ -75,7 +76,7 @@
   </div>
 
   <ion-fab slot="fixed" horizontal="end" vertical="bottom">
-    <ion-fab-button class="btnFab" (click)="addProducts()">
+    <ion-fab-button (click)="addProducts()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
@@ -93,41 +94,31 @@
               <ion-img src="assets/icon/icon_art_com_modal.png"></ion-img>
             </div>
 
-            <div class="content">
+            <div>
               <ion-grid class="gridContent">
                 <ion-row>
-                  <ion-col>
-                    <ion-text>Codigo{{codigo_barras}}</ion-text>
+                  <ion-col >
+                    <ion-text>Código: {{selectedItem?.codigo_barras}}</ion-text>
                   </ion-col>
                 </ion-row>
                 <ion-row>
                   <ion-col>
-                    <ion-text>Nombre{{nom_producto}}</ion-text>
+                    <ion-text>Nombre: {{selectedItem?.nom_producto}}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col >
+                    <ion-text>Descripcion: {{selectedItem?.descrip_prod}}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col >
+                    <ion-text>Unidades disponibles: {{selectedItem?.unidades_dispon}}</ion-text>
                   </ion-col>
                 </ion-row>
                 <ion-row>
                   <ion-col>
-                    <ion-text>Descripcion{{descrip_prod}}</ion-text>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <ion-text>Promocion{{id_prom_pro}}</ion-text>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <ion-text>Categoria{{id_cat_pro}}</ion-text>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <ion-text>Unidades disponibles{{unidades_dispon}}</ion-text>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <ion-text>Precio{{precio}}</ion-text>
+                    <ion-text>Precio: {{selectedItem?.precio}}</ion-text>
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -153,7 +144,7 @@
       <ng-template>
         <ion-content>
           <div class="modalContentForm">
-            <div class="headModal">
+            <div class="headModalForm">
               <div>
                 <ion-icon
                   class="iconBack"
@@ -168,7 +159,7 @@
               <ion-grid>
                 <ion-row>
                   <ion-col>
-                    <ion-item class="inputBig" style="margin-top: 20px;">
+                    <ion-item class="inputBig" style="margin-top: 20px">
                       <ion-input
                         clearInput
                         [(ngModel)]="codigo_barras"
@@ -216,6 +207,7 @@
                   <ion-col>
                     <ion-item class="inputNum">
                       <ion-input
+                        [(ngModel)]="unidades_dispon"
                         type="number"
                         placeholder="Unidades"
                         min="0"
@@ -231,7 +223,7 @@
                         interface="popover"
                         placeholder="Categoría"
                         style="margin-top: -10px; margin-bottom: -10px"
-                        [(ngModel)]="selectedOption"
+                        [(ngModel)]="selectedOptionCateg"
                       >
                         <ion-select-option
                           *ngFor="let option of optionsCateg"
@@ -241,8 +233,8 @@
                       </ion-select>
                       <ion-icon
                         name="close-circle"
-                        (click)="clearSelection()"
-                        *ngIf="selectedOption"
+                        (click)="clearSelectionCateg()"
+                        *ngIf="selectedOptionCateg"
                       ></ion-icon>
                     </ion-item>
                   </ion-col>
@@ -257,7 +249,7 @@
                         interface="popover"
                         placeholder="IVA"
                         style="margin-top: -10px; margin-bottom: -10px"
-                        [(ngModel)]="selectedOption"
+                        [(ngModel)]="selectedOptionIVA"
                       >
                         <ion-select-option
                           *ngFor="let option of optionsIva"
@@ -267,8 +259,8 @@
                       </ion-select>
                       <ion-icon
                         name="close-circle"
-                        (click)="clearSelection()"
-                        *ngIf="selectedOption"
+                        (click)="clearSelectionIVA()"
+                        *ngIf="selectedOptionIVA"
                       ></ion-icon>
                     </ion-item>
                   </ion-col>
@@ -283,7 +275,7 @@
                         interface="popover"
                         placeholder="Promoción"
                         style="margin-top: -10px; margin-bottom: -10px"
-                        [(ngModel)]="selectedOption"
+                        [(ngModel)]="selectedOptionProm"
                       >
                         <ion-select-option
                           *ngFor="let option of optionsProm"
@@ -293,8 +285,8 @@
                       </ion-select>
                       <ion-icon
                         name="close-circle"
-                        (click)="clearSelection()"
-                        *ngIf="selectedOption"
+                        (click)="clearSelectionProm()"
+                        *ngIf="selectedOptionProm"
                       ></ion-icon>
                     </ion-item>
                   </ion-col>
@@ -304,7 +296,9 @@
                 </ion-row>
                 <ion-row>
                   <ion-col>
-                    <ion-button class="btnVender">{{nameBtnModalForm}} </ion-button>
+                    <ion-button (click)="addProduct()" class="btnVender"
+                      >{{nameBtnModalForm}}
+                    </ion-button>
                   </ion-col>
                 </ion-row>
               </ion-grid>
