@@ -14,7 +14,11 @@ const routes: Routes = [
   {
     path: 'gtn-products',
     loadChildren: () => import('./pages/gtn-products/gtn-products.module').then( m => m.GtnProductsPageModule)
+  },  {
+    path: 'gtn-client',
+    loadChildren: () => import('./pages/gtn-client/gtn-client.module').then( m => m.GtnClientPageModule)
   },
+
 ];
 
 @NgModule({

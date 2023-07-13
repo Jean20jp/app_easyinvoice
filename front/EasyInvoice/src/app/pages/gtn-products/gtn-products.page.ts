@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { ToastController, NavController, AlertController, ModalController, IonModal } from '@ionic/angular';
+import { IonModal } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gtn-products',
@@ -24,13 +23,12 @@ export class GtnProductsPage implements OnInit {
 
   showBackdrop: boolean = false;
 
-  items: any[] = [
-    { id: 1, name: 'Item 1', description: 'Descripción del Item 1' },
-    { id: 2, name: 'Item 2', description: 'Descripción del Item 2' },
-    { id: 3, name: 'Item 3', description: 'Descripción del Item 3' },
-  ];
+  itemsClieFilterAux: any[] = [];
+  items: any[] = [];
+  private listWithOutFilter: any[] = [];
 
   selectedItems: any[] = [];
+  selectedItem!: any;
 
   titleModalForm!: string;
   nameBtnModalForm!: string;
@@ -38,15 +36,44 @@ export class GtnProductsPage implements OnInit {
   optionsCateg!: any[];
   optionsIva!: any[];
   optionsProm!: any[];
-  selectedOption: any;
+  selectedOptionCateg: any;
+  selectedOptionIVA: any;
+  selectedOptionProm: any;
 
-  constructor(private toastController: ToastController, private http: HttpClient, private route: ActivatedRoute,
-    private alertController: AlertController, private modalController: ModalController, private navCtrl: NavController) {
+  constructor(private http: HttpClient, private toastController: ToastController) {
+    this.recoverCategories();
+    this.recoverCategIva();
+    this.recoverCategProm();
+    this.loadProducts();
+  }
 
-      this.recoverCategories();
-      this.recoverCategIva();
-      this.recoverCategProm();
+  async alertProdAddCorrect() {
+    const toast = await this.toastController.create({
+      message: 'Producto registrado correctamente',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom' // Posición del mensaje ('top', 'middle', o 'bottom')
+    });
+    toast.present();
+  }
 
+  async alertInputEmpty() {
+    const toast = await this.toastController.create({
+      message: 'Todos los campos son obligatorios',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom', // Posición del mensaje ('top', 'middle', o 'bottom')
+      color: 'danger' // Color del mensaje de error
+    });
+    toast.present();
+  }
+
+  async alertCodBarras() {
+    const toast = await this.toastController.create({
+      message: 'El código ingresado ya existe',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom', // Posición del mensaje ('top', 'middle', o 'bottom')
+      color: 'danger' // Color del mensaje de error
+    });
+    toast.present();
   }
 
   openModalForm() {
@@ -54,10 +81,12 @@ export class GtnProductsPage implements OnInit {
   }
 
   closeModalForm() {
+    this.clearInputs()
     this.modalForm.dismiss()
   }
 
-  openModalDtProd() {
+  openModalDtProd(item: any) {
+    this.selectedItem = item;
     this.modalDtProd.present();
   }
 
@@ -96,11 +125,135 @@ export class GtnProductsPage implements OnInit {
   }
 
   ngOnInit() {
-    
+
+  }
+
+  clearInputs() {
+    this.codigo_barras = "";
+    this.nom_producto = "";
+    this.descrip_prod = "";
+    this.precio = "";
+    this.unidades_dispon = "";
+    this.clearSelectionCateg();
+    this.clearSelectionIVA();
+    this.clearSelectionProm();
+  }
+
+  isEmptyInput(codigo_barras: string, nom_producto: string, descrip_prod: string, precio: string,
+    unidades_dispon: string, selectedOptionCateg: string, selectedOptionIVA: string, selectedOptionProm: string) {
+
+    if (!codigo_barras || !nom_producto || !descrip_prod || !precio || !unidades_dispon
+      || /^\s+|\s+$/g.test(codigo_barras) || /^\s+|\s+$/g.test(nom_producto) || /^\s+|\s+$/g.test(descrip_prod)
+      || /^\s+|\s+$/g.test(precio) || /^\s+|\s+$/g.test(unidades_dispon)
+      || selectedOptionCateg === null || selectedOptionIVA === null || selectedOptionProm === null) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  validateCodProd(codigo_barras: string) {
+    for (const item of this.items) {
+      if (item.codigo_barras === codigo_barras) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  getIdCateg(selectedOptionCateg: string) {
+    if (selectedOptionCateg === "Bebidas") {
+      return 23;
+    } else if (selectedOptionCateg === "Utilidades") {
+      return 24;
+    } else if (selectedOptionCateg == "Juguetes") {
+      return 25;
+    } else {
+      return 27;
+    }
+  }
+
+  getIdIVA(selectedOptionIVA: string) {
+    if (selectedOptionIVA === "General") {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  getIdProm(selectedOptionProm: string) {
+    if (selectedOptionProm === "Cupones") {
+      return 2;
+    } else if (selectedOptionProm === "Sin promoción") {
+      return 3;
+    } else if (selectedOptionProm == "Sorteo") {
+      return 4;
+    } else {
+      return 5;
+    }
+  }
+
+  addProduct() {
+    if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
+      this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
+
+      if (this.validateCodProd(this.codigo_barras)) {
+        const url = 'http://localhost:8080/product/save-product';
+        const id_categ = this.getIdCateg(this.selectedOptionCateg);
+        const id_promocio = this.getIdProm(this.selectedOptionProm);
+        const id_categ_iva = this.getIdIVA(this.selectedOptionIVA);
+        const productData = JSON.stringify({
+          id_promocion: id_promocio,
+          id_categ: id_categ,
+          id_categ_iva: id_categ_iva,
+          nom_producto: this.nom_producto,
+          descrip_prod: this.descrip_prod,
+          precio: this.precio,
+          unidades_dispon: this.unidades_dispon,
+          codigo_barras: this.codigo_barras,
+        });
+
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+
+        this.http.post(url, productData, { headers }).subscribe(
+          (response) => {
+            if (response != null) {
+              this.alertProdAddCorrect;
+              this.closeModalForm();
+              this.loadProducts();
+            }
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
+      } else {
+        this.alertCodBarras();
+        this.codigo_barras = "";
+      }
+    }
+  }
+
+  loadProducts() {
+    const url = 'http://localhost:8080/product/get-products';
+    this.http.get<any[]>(url).subscribe(
+      (response) => {
+        if (response !== null) {
+          this.items = response;
+          this.listWithOutFilter = this.items;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar ciudades:', error);
+      }
+    );
   }
 
   recoverCategories() {
-    const url = "http://localhost:8080/category";
+    const url = "http://localhost:8080/category/get-category";
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
@@ -154,9 +307,28 @@ export class GtnProductsPage implements OnInit {
     return listCities;
   }
 
+  onSearchChange(event: any) {
+    const searchTerm = event.target.value;
+    if (searchTerm.trim() !== '') {
+      this.items = this.items.filter(item =>
+        item.nom_producto.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      this.items = this.listWithOutFilter;
+    }
+  }
 
-  clearSelection() {
-    this.selectedOption = null;
+  clearSelectionCateg() {
+    this.selectedOptionCateg = null;
+  }
+
+  clearSelectionIVA() {
+    this.selectedOptionIVA = null;
+  }
+
+
+  clearSelectionProm() {
+    this.selectedOptionProm = null;
   }
 
   goBack() {
@@ -165,11 +337,6 @@ export class GtnProductsPage implements OnInit {
 
   loadDataList() {
 
-  }
-
-  getItems(): Observable<any[]> {
-    const url = "";
-    return this.http.get<any[]>(url);
   }
 
 
@@ -185,12 +352,5 @@ export class GtnProductsPage implements OnInit {
     this.showBackdrop = !this.showBackdrop;
   }
 
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 2000
-    });
-    toast.present();
-  }
 
 }

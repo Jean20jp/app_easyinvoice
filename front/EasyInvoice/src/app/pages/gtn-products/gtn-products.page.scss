@@ -80,8 +80,6 @@ ion-modal {
   align-items: center;
   height: 12%;
   background-color: #063970;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
   width: 100%;
 }
 
@@ -189,6 +187,17 @@ ion-grid {
   --background: #3d648d;
   border: 2px solid white;
   border-radius: 14px;
+}
+
+.headModalForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12%;
+  background-color: #063970;
+  width: 100%;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .inputSelectSmall {
