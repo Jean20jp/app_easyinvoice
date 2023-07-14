@@ -1,5 +1,6 @@
 package com.serviciosFacturacion.servicios.controllers;
 
+import com.serviciosFacturacion.servicios.models.CategoryModel;
 import com.serviciosFacturacion.servicios.models.IvaModel;
 import com.serviciosFacturacion.servicios.services.IvaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class IvaController {
     }
 
 
-
+    /**
     @DeleteMapping(value = "/delete-iva/{id}", path = "/delete-iva/{id}")
     public String deleteById(@PathVariable("id") Long id_categ_iva){
         boolean ok = this.ivaService.deleteIva(id_categ_iva);
@@ -49,6 +50,19 @@ public class IvaController {
 
         }
     }
+     */
+    @DeleteMapping(value = "/delete-iva/{id}", path = "/delete-iva/{id}")
+    public String deleteById(@PathVariable("id") Long id_categ_iva ) {
+        IvaModel iva = ivaService.findById(id_categ_iva );
+        if (iva != null) {
+            iva.setEst_categ_iva((byte) 0);  // Establecer el campo est_prom a 0 en lugar de eliminar
+            ivaService.updateIva(iva);  // Llamar al método para actualizar la promoción en lugar de eliminarla
+            return "IVA  CATEGORY  with id " + id_categ_iva  + " set to inactive";
+        } else {
+            return "IVA  CATEGORY  not found";
+        }
+    }
+
 
 }
 
