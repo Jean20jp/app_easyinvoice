@@ -23,6 +23,7 @@ export class GtnProductsPage implements OnInit {
 
   @ViewChild('modalForm') modalForm!: IonModal;
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
+  @ViewChild('modalFormCateg') modalFormCateg!: IonModal;
 
   showBackdrop: boolean = false;
 
@@ -86,6 +87,14 @@ export class GtnProductsPage implements OnInit {
   closeModalForm() {
     this.clearInputs()
     this.modalForm.dismiss()
+  }
+
+  openModalFormCateg() {
+    this.modalFormCateg.present();
+  }
+
+  closeModalFormCateg() {
+    this.modalFormCateg.dismiss();
   }
 
   openModalDtProd(item: any) {
