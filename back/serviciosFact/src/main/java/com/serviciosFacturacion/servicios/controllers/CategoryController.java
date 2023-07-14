@@ -1,6 +1,7 @@
 package com.serviciosFacturacion.servicios.controllers;
 
 import com.serviciosFacturacion.servicios.models.CategoryModel;
+import com.serviciosFacturacion.servicios.models.PromotionModel;
 import com.serviciosFacturacion.servicios.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class CategoryController {
 
     }
 
-    //aaa
+    /**
     @DeleteMapping(value = "/delete-category/{id}", path = "/delete-category/{id}")
     //@DeleteMapping(path = "/{id}")
     public String deleteById(@PathVariable("id") Long id_categ){
@@ -47,4 +48,20 @@ public class CategoryController {
 
         }
     }
+     */
+
+    @DeleteMapping(value = "/delete-category/{id}", path = "/delete-category/{id}")
+    public String deleteById(@PathVariable("id") Long id_categ) {
+        CategoryModel category = categoryService.findById(id_categ);
+        if (category != null) {
+            category.setEst_categ((byte) 0);  // Establecer el campo est_prom a 0 en lugar de eliminar
+            categoryService.updateCategory(category);  // Llamar al método para actualizar la promoción en lugar de eliminarla
+            return "Category_product with id " + id_categ + " set to inactive";
+        } else {
+            return "Category_product  not found";
+        }
+    }
+
+
+
 }

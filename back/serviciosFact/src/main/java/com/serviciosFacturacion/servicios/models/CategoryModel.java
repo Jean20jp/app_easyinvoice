@@ -14,8 +14,19 @@ public class CategoryModel {
     private  String nom_categ;
     @Column
     private  String descrip_categ;
+    //@Column
+    //private  Long parent_id ;
+
     @Column
-    private  Long parent_id ;
+    private Byte est_categ;
+
+    public Byte getEst_categ() {
+        return est_categ;
+    }
+
+    public void setEst_categ(Byte est_categ) {
+        this.est_categ = est_categ;
+    }
 
     public Long getId_categ() {
         return id_categ;
@@ -41,11 +52,11 @@ public class CategoryModel {
         this.descrip_categ = descrip_categ;
     }
 
-    public Long getParent_id() {
-        return parent_id;
-    }
+    //public Long getParent_id() {
+    //    return parent_id;
+    //}
 
-    public void setParent_id(Long parent_id) {
-        this.parent_id = parent_id;
-    }
+    //public void setParent_id(Long parent_id) {
+    //    this.parent_id = parent_id;
+    //}
 }
