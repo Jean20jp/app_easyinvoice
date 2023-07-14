@@ -1,13 +1,13 @@
 <ion-content>
   <div class="head">
-    <div id="menu">
+    <div id="menu" class="menuBtn">
       <ion-menu-button></ion-menu-button>
     </div>
     <ion-text class="title">Gestión Productos</ion-text>
   </div>
 
   <div>
-    <ion-grid>
+    <ion-grid class="gridGtnPro">
       <ion-row>
         <ion-col>
           <ion-searchbar
@@ -82,7 +82,7 @@
   </ion-fab>
 
   <div>
-    <ion-modal #modalDtProd [showBackdrop]="showBackdrop">
+    <ion-modal #modalDtProd [showBackdrop]="showBackdrop" class="modalDt">
       <ng-template>
         <ion-content>
           <div class="modal">
@@ -108,7 +108,17 @@
                 </ion-row>
                 <ion-row>
                   <ion-col >
-                    <ion-text>Descripcion: {{selectedItem?.descrip_prod}}</ion-text>
+                    <ion-text>Descripción: {{selectedItem?.descrip_prod}}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col >
+                    <ion-text>Promoción: {{prom_pro}}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col >
+                    <ion-text>Categoría: {{categ_pro}}</ion-text>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -227,8 +237,8 @@
                       >
                         <ion-select-option
                           *ngFor="let option of optionsCateg"
-                          [value]="option"
-                          >{{option}}</ion-select-option
+                          [value]="option.id_categ"
+                          >{{option.nom_categ}}</ion-select-option
                         >
                       </ion-select>
                       <ion-icon
@@ -253,8 +263,8 @@
                       >
                         <ion-select-option
                           *ngFor="let option of optionsIva"
-                          [value]="option"
-                          >{{option}}</ion-select-option
+                          [value]="option.id_categ_iva"
+                          >{{option.nomb_categ_iva}}</ion-select-option
                         >
                       </ion-select>
                       <ion-icon
@@ -279,8 +289,8 @@
                       >
                         <ion-select-option
                           *ngFor="let option of optionsProm"
-                          [value]="option"
-                          >{{option}}</ion-select-option
+                          [value]="option.id_prom"
+                          >{{option.nom_prom}}</ion-select-option
                         >
                       </ion-select>
                       <ion-icon

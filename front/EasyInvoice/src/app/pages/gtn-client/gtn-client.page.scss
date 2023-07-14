@@ -23,11 +23,17 @@ ion-content {
 }
 
 ion-menu-button {
-  position: absolute;
-  top: 25px;
-  left: 30px;
+  position: static;
   font-size: 42px;
   color: white;
+}
+
+.menuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: -80px;
+  margin-right: 15%;
 }
 
 .search {
@@ -52,7 +58,7 @@ ion-menu-button {
 .modalDtClie {
   display: flex;
   flex-direction: column;
-  height: 70%;
+  height: 100%;
   background-color: #f3f3f3;
   border-radius: 15px;
 }
@@ -98,7 +104,7 @@ ion-menu-button {
 }
 
 .modalDt {
-  --height: 70%;
+  --height: 45%;
   --border-radius: 30px;
   margin-left: 20px;
   margin-right: 20px;
@@ -134,7 +140,7 @@ ion-menu-button {
 .iconBack {
   color: white;
   position: absolute;
-  top: 23px;
+  top: 30px;
   left: 25px;
   font-size: 42px;
   color: white;
@@ -146,6 +152,7 @@ ion-menu-button {
   border-radius: 12px;
   border: 2px solid white;
   --background: #3d648d;
+  color: white;
 }
 
 .inputBig {
@@ -155,6 +162,7 @@ ion-menu-button {
   --background: #3d648d;
   border: 2px solid white;
   --border-color: transparent;
+  color: white;
 }
 
 .btnRegistrar {
@@ -175,4 +183,5 @@ ion-menu-button {
   align-items: center;
   margin-left: 20px;
   margin-right: 20px;
+  margin-top: 20px
 }

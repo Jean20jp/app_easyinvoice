@@ -18,6 +18,9 @@ export class GtnProductsPage implements OnInit {
   unidades_dispon!: string;
   precio!: string;
 
+  prom_pro!: string;
+  categ_pro!: string;
+
   @ViewChild('modalForm') modalForm!: IonModal;
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
 
@@ -86,12 +89,42 @@ export class GtnProductsPage implements OnInit {
   }
 
   openModalDtProd(item: any) {
+    this.getPromocPro(item);
+    this.getCategPro(item);
     this.selectedItem = item;
     this.modalDtProd.present();
   }
 
   closeModalDtProd() {
     this.modalDtProd.dismiss()
+  }
+
+  getPromocPro(product: any) {
+    const url = 'http://localhost:8080/promotion/'+ product['id_promocion'];
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.prom_pro = response.nom_prom;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
+  getCategPro(product: any) {
+    const url = 'http://localhost:8080/category/'+ product['id_categ'];
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.categ_pro = response.nom_categ;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
   }
 
   addProducts() {
@@ -145,7 +178,7 @@ export class GtnProductsPage implements OnInit {
     if (!codigo_barras || !nom_producto || !descrip_prod || !precio || !unidades_dispon
       || /^\s+|\s+$/g.test(codigo_barras) || /^\s+|\s+$/g.test(nom_producto) || /^\s+|\s+$/g.test(descrip_prod)
       || /^\s+|\s+$/g.test(precio) || /^\s+|\s+$/g.test(unidades_dispon)
-      || selectedOptionCateg === null || selectedOptionIVA === null || selectedOptionProm === null) {
+      || selectedOptionCateg === undefined || selectedOptionIVA === undefined || selectedOptionProm === undefined) {
       this.alertInputEmpty();
       return false;
     } else {
@@ -162,47 +195,16 @@ export class GtnProductsPage implements OnInit {
     return true;
   }
 
-  getIdCateg(selectedOptionCateg: string) {
-    if (selectedOptionCateg === "Bebidas") {
-      return 23;
-    } else if (selectedOptionCateg === "Utilidades") {
-      return 24;
-    } else if (selectedOptionCateg == "Juguetes") {
-      return 25;
-    } else {
-      return 27;
-    }
-  }
-
-  getIdIVA(selectedOptionIVA: string) {
-    if (selectedOptionIVA === "General") {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-
-  getIdProm(selectedOptionProm: string) {
-    if (selectedOptionProm === "Cupones") {
-      return 2;
-    } else if (selectedOptionProm === "Sin promoción") {
-      return 3;
-    } else if (selectedOptionProm == "Sorteo") {
-      return 4;
-    } else {
-      return 5;
-    }
-  }
-
   addProduct() {
     if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
       this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
 
       if (this.validateCodProd(this.codigo_barras)) {
         const url = 'http://localhost:8080/product/save-product';
-        const id_categ = this.getIdCateg(this.selectedOptionCateg);
-        const id_promocio = this.getIdProm(this.selectedOptionProm);
-        const id_categ_iva = this.getIdIVA(this.selectedOptionIVA);
+        const id_categ = this.selectedOptionCateg;
+        const id_promocio = this.selectedOptionProm;
+        const id_categ_iva = this.selectedOptionIVA;
+        console.log(id_categ + ' ' + id_promocio + ' ' + id_categ_iva)
         const productData = JSON.stringify({
           id_promocion: id_promocio,
           id_categ: id_categ,
@@ -257,7 +259,7 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsCateg = this.cleanOptions(response, "nom_categ");
+          this.optionsCateg = response;
         }
       },
       (error) => {
@@ -271,7 +273,7 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsIva = this.cleanOptions(response, "nomb_categ_iva");
+          this.optionsIva = response;
         }
       },
       (error) => {
@@ -285,26 +287,13 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsProm = this.cleanOptions(response, "nom_prom");
+          this.optionsProm = response;
         }
       },
       (error) => {
         console.error('Error al recuperar ciudades:', error);
       }
     );
-  }
-
-  cleanOptions(response: any, propertyName: string): any[] {
-    const listCities: any[] = [];
-    const seenProperties: Set<any> = new Set();
-    for (const json of response) {
-      const property = json[propertyName];
-      if (!seenProperties.has(property)) {
-        seenProperties.add(property);
-        listCities.push(property);
-      }
-    }
-    return listCities;
   }
 
   onSearchChange(event: any) {
