@@ -15,13 +15,13 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping
+    @GetMapping("/get-customer")
     public ArrayList<CustomerModel> getCustomers(){
 
         return this.customerService.getCustomers();
     }
 
-    @PostMapping
+    @PostMapping("/save-customer")
     public CustomerModel saveCustomer(@RequestBody CustomerModel customer){
         return this.customerService.saveCustomer(customer);
     }
@@ -31,8 +31,7 @@ public class CustomerController {
     public Optional<CustomerModel> getCustomerById(@PathVariable("id") Long id_cliente) {
         return this.customerService.getById(id_cliente);
     }
-
-    @PutMapping(path = "/{id}")
+    @PutMapping(value = "/modif-customer/{id}", path = "/modif-customer/{id}")
     public CustomerModel updateCustomerById(@RequestBody CustomerModel request, @PathVariable("id") Long id_cliente){
         return this.customerService.updateById(request, id_cliente);
 

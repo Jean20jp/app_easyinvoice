@@ -57,8 +57,6 @@ public class UserService {
             user.setEstado_usuario(request.getEstado_usuario());
             user.setTip_usuario(request.getTip_usuario());
             user.setContrasenia(request.getContrasenia());
-            user.setFoto(request.getFoto());
-
         }
         return user;
     }
@@ -94,7 +92,6 @@ public class UserService {
                 user.setEstado_usuario(rs.getByte("estado_usuario"));
                 user.setTip_usuario(rs.getByte("tip_usuario"));
                 user.setContrasenia(rs.getString("contrasenia"));
-                user.setFoto(rs.getByte("foto"));
                 return user;
             });
         } catch (EmptyResultDataAccessException e) {

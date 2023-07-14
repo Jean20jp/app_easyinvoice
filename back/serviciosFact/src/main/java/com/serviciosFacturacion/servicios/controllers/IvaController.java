@@ -13,12 +13,12 @@ import java.util.Optional;
 public class IvaController {
     @Autowired
     private IvaService ivaService;
-    @GetMapping
+    @GetMapping("/get-iva")
     public ArrayList<IvaModel> getIvas(){
         return this.ivaService.getIvas();
     }
 
-    @PostMapping
+    @PostMapping("/save-iva")
     public  IvaModel saveIva(@RequestBody IvaModel  iva){
         return this.ivaService.saveIva(iva);
     }
@@ -31,7 +31,7 @@ public class IvaController {
         return  this.ivaService.getById(id_categ_iva);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(value = "/modif-iva/{id}", path = "/modif-iva/{id}")
     public IvaModel updateIvaById(@RequestBody IvaModel request,@PathVariable("id") Long id_categ_iva){
         return this.ivaService.updateById(request, id_categ_iva);
 
@@ -39,7 +39,7 @@ public class IvaController {
 
 
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(value = "/delete-iva/{id}", path = "/delete-iva/{id}")
     public String deleteById(@PathVariable("id") Long id_categ_iva){
         boolean ok = this.ivaService.deleteIva(id_categ_iva);
         if (ok){

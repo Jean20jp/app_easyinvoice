@@ -16,12 +16,12 @@ public class PromotionController {
     private PromotionService promotionService;
 
 
-    @GetMapping
+    @GetMapping("/get-promotion")
     public ArrayList<PromotionModel> getPromotions() {
         return this.promotionService.getPromotions();
     }
 
-    @PostMapping
+    @PostMapping("/save-promotion")
     public PromotionModel savePromotion(@RequestBody PromotionModel promotion) {
         return this.promotionService.savePromotion(promotion);
     }
@@ -32,14 +32,14 @@ public class PromotionController {
         return this.promotionService.getById(id_prom);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(value = "/modif-promotion/{id}", path = "/modif-promotion/{id}")
     public PromotionModel updatePromotionById(@RequestBody PromotionModel request, @PathVariable("id") Long id_prom) {
         return this.promotionService.updateById(request, id_prom);
 
     }
 
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(value = "/delete-promotion/{id}", path = "/delete-promotion/{id}")
     public String deleteById(@PathVariable("id") Long id_prom) {
         boolean ok = this.promotionService.deletePromotion(id_prom);
         if (ok) {
