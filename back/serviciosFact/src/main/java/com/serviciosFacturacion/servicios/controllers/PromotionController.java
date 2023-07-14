@@ -38,7 +38,7 @@ public class PromotionController {
 
     }
 
-
+    /**
     @DeleteMapping(value = "/delete-promotion/{id}", path = "/delete-promotion/{id}")
     public String deleteById(@PathVariable("id") Long id_prom) {
         boolean ok = this.promotionService.deletePromotion(id_prom);
@@ -49,5 +49,20 @@ public class PromotionController {
 
         }
     }
+     */
+
+
+    @DeleteMapping(value = "/delete-promotion/{id}", path = "/delete-promotion/{id}")
+    public String deleteById(@PathVariable("id") Long id_prom) {
+        PromotionModel promotion = promotionService.findById(id_prom);
+        if (promotion != null) {
+            promotion.setEst_prom((byte) 0);  // Establecer el campo est_prom a 0 en lugar de eliminar
+            promotionService.updatePromotion(promotion);  // Llamar al método para actualizar la promoción en lugar de eliminarla
+            return "Promotion with id " + id_prom + " set to inactive";
+        } else {
+            return "Promotion not found";
+        }
+    }
+
 }
 

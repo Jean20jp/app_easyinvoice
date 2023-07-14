@@ -47,7 +47,7 @@ public class PromotionService {
 
             promotion.setNom_prom(request.getNom_prom());
             promotion.setDescrip_prom(request.getDescrip_prom());
-            promotion.setTip_prom(request.getTip_prom());
+            promotion.setEst_prom(request.getEst_prom());
             promotion.setPorcentaje_desc(request.getPorcentaje_desc());
         }
         return promotion;
@@ -65,5 +65,12 @@ public class PromotionService {
         }
     }
 
+    public PromotionModel updatePromotion(PromotionModel promotion) {
+        return promotionRepository.save(promotion);
+    }
+
+    public PromotionModel findById(Long id_prom) {
+        return promotionRepository.findById(id_prom).orElse(null);
+    }
 
 }

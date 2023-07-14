@@ -19,8 +19,18 @@ public class PromotionModel {
     @Column
     private float porcentaje_desc;
 
+    //@Column
+    //private String tip_prom;
     @Column
-    private String tip_prom;
+    private Byte est_prom;
+
+    public Byte getEst_prom() {
+        return est_prom;
+    }
+
+    public void setEst_prom(Byte est_prom) {
+        this.est_prom = est_prom;
+    }
 
     public Long getId_prom() {
         return id_prom;
@@ -54,11 +64,11 @@ public class PromotionModel {
         this.porcentaje_desc = porcentaje_desc;
     }
 
-    public String getTip_prom() {
-        return tip_prom;
-    }
+    //public String getTip_prom() {
+    //return tip_prom;
+    //}
 
-    public void setTip_prom(String tip_prom) {
-        this.tip_prom = tip_prom;
-    }
+    //public void setTip_prom(String tip_prom) {
+    //    this.tip_prom = tip_prom;
+    //}
 }
