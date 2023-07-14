@@ -339,9 +339,10 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="Categoría"
+                        placeholder="Categorías"
                         style="margin-top: -10px; margin-bottom: -10px"
-                        [(ngModel)]="selectedOptionCateg"
+                        [(ngModel)]="selectedOptCategGtn"
+                        (ionChange)="selectCategChange()"
                       >
                         <ion-select-option
                           *ngFor="let option of optionsCateg"
@@ -351,8 +352,8 @@
                       </ion-select>
                       <ion-icon
                         name="close-circle"
-                        (click)="clearSelectionCateg()"
-                        *ngIf="selectedOptionCateg"
+                        (click)="clearSelectionCategGtn()"
+                        *ngIf="selectedOptCategGtn"
                       ></ion-icon>
                     </ion-item>
                   </ion-col>
@@ -363,7 +364,7 @@
                     <ion-item class="inputBig">
                       <ion-input
                         clearInput
-                        [(ngModel)]="descrip_prod"
+                        [(ngModel)]="nom_categ"
                         type="text"
                         placeholder="Nombre de la categoría"
                       ></ion-input>
@@ -376,7 +377,7 @@
                     <ion-item class="inputBig">
                       <ion-input
                         clearInput
-                        [(ngModel)]="descrip_prod"
+                        [(ngModel)]="descr_categ"
                         type="text"
                         placeholder="Descripción de la categoría"
                       ></ion-input>
@@ -386,8 +387,8 @@
           
                 <ion-row>
                   <ion-col>
-                    <ion-button  class="btnVender"
-                      >{{nameBtnModalForm}}
+                    <ion-button (click)="handleButtonClick()" class="btnVender"
+                      >{{btnNameGtnCateg}}
                     </ion-button>
                   </ion-col>
                 </ion-row>

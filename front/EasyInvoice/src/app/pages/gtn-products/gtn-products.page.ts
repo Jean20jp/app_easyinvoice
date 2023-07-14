@@ -44,6 +44,11 @@ export class GtnProductsPage implements OnInit {
   selectedOptionIVA: any;
   selectedOptionProm: any;
 
+  selectedOptCategGtn: any;
+  nom_categ!: string;
+  descr_categ!: string;
+  btnNameGtnCateg: string = "Registrar";
+
   constructor(private http: HttpClient, private toastController: ToastController) {
     this.recoverCategories();
     this.recoverCategIva();
@@ -51,9 +56,9 @@ export class GtnProductsPage implements OnInit {
     this.loadProducts();
   }
 
-  async alertProdAddCorrect() {
+  async alertInsertCorrectly() {
     const toast = await this.toastController.create({
-      message: 'Producto registrado correctamente',
+      message: 'Se registrado correctamente',
       duration: 3000, // Duración en milisegundos
       position: 'bottom' // Posición del mensaje ('top', 'middle', o 'bottom')
     });
@@ -109,7 +114,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   getPromocPro(product: any) {
-    const url = 'http://localhost:8080/promotion/'+ product['id_promocion'];
+    const url = 'http://localhost:8080/promotion/' + product['id_promocion'];
     this.http.get<any[]>(url).subscribe(
       (response: any) => {
         if (response !== null) {
@@ -122,8 +127,97 @@ export class GtnProductsPage implements OnInit {
     );
   }
 
+  insertCategoria() {
+    if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
+      const url = "http://localhost:8080/category/save-category"
+      const categData = JSON.stringify({
+        nom_categ: this.nom_categ,
+        descrip_categ: this.descr_categ,
+        parent_id: null,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      this.http.post(url, categData, { headers }).subscribe(
+        (response) => {
+          if (response != null) {
+            this.alertInsertCorrectly;
+            this.closeModalFormCateg();
+            this.recoverCategories();
+            this.clearSelectionCategGtn();
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  modificarCategoria(id: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
+
+      const url = 'http://localhost:8080/category/modif-category/' + id;
+
+      const dataCateg = JSON.stringify({
+        nom_categ: this.nom_categ,
+        descrip_categ: this.descr_categ,
+        parent_id: null,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataCateg, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalFormCateg();
+          this.recoverCategories();
+          this.clearSelectionCategGtn();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+
+  }
+
+  selectCategChange() {
+    if (this.selectedOptCategGtn) {
+      this.getCategId(this.selectedOptCategGtn);
+    }
+  }
+
+  getCategId(id: string) {
+    const url = 'http://localhost:8080/category/' + id;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.nom_categ = response.nom_categ;
+          this.descr_categ = response.descrip_categ;
+          this.btnNameGtnCateg = "Modificar"
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
+  handleButtonClick() {
+    if (this.btnNameGtnCateg === 'Registrar') {
+      this.insertCategoria();
+    } else if (this.btnNameGtnCateg === 'Modificar') {
+      this.modificarCategoria(this.selectedOptCategGtn);
+    }
+  }
+
   getCategPro(product: any) {
-    const url = 'http://localhost:8080/category/'+ product['id_categ'];
+    const url = 'http://localhost:8080/category/' + product['id_categ'];
     this.http.get<any[]>(url).subscribe(
       (response: any) => {
         if (response !== null) {
@@ -181,6 +275,21 @@ export class GtnProductsPage implements OnInit {
     this.clearSelectionProm();
   }
 
+  clearInputsGtnCateg() {
+    this.nom_categ = "";
+    this.descr_categ = ""
+  }
+
+  isEmptyInputGtnCateg(nom_categ: string, descr_categ: string) {
+    if (!nom_categ || !descr_categ || /^\s+|\s+$/g.test(nom_categ)
+      || /^\s+|\s+$/g.test(descr_categ)) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   isEmptyInput(codigo_barras: string, nom_producto: string, descrip_prod: string, precio: string,
     unidades_dispon: string, selectedOptionCateg: string, selectedOptionIVA: string, selectedOptionProm: string) {
 
@@ -213,7 +322,6 @@ export class GtnProductsPage implements OnInit {
         const id_categ = this.selectedOptionCateg;
         const id_promocio = this.selectedOptionProm;
         const id_categ_iva = this.selectedOptionIVA;
-        console.log(id_categ + ' ' + id_promocio + ' ' + id_categ_iva)
         const productData = JSON.stringify({
           id_promocion: id_promocio,
           id_categ: id_categ,
@@ -232,7 +340,7 @@ export class GtnProductsPage implements OnInit {
         this.http.post(url, productData, { headers }).subscribe(
           (response) => {
             if (response != null) {
-              this.alertProdAddCorrect;
+              this.alertInsertCorrectly;
               this.closeModalForm();
               this.loadProducts();
             }
@@ -318,6 +426,12 @@ export class GtnProductsPage implements OnInit {
 
   clearSelectionCateg() {
     this.selectedOptionCateg = null;
+
+  }
+  clearSelectionCategGtn() {
+    this.selectedOptCategGtn = null;
+    this.btnNameGtnCateg = "Registrar"
+    this.clearInputsGtnCateg();
   }
 
   clearSelectionIVA() {
