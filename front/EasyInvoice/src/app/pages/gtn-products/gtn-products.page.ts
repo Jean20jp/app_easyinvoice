@@ -10,6 +10,7 @@ import { ToastController } from '@ionic/angular';
 })
 export class GtnProductsPage implements OnInit {
 
+  id_producto!: string;
   codigo_barras!: string;
   nom_producto!: string;
   descrip_prod!: string;
@@ -20,6 +21,9 @@ export class GtnProductsPage implements OnInit {
 
   prom_pro!: string;
   categ_pro!: string;
+
+  isDisabledBtnElim: boolean = true;
+  isDisabledInpCodProd!: boolean;
 
   @ViewChild('modalForm') modalForm!: IonModal;
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
@@ -100,6 +104,7 @@ export class GtnProductsPage implements OnInit {
 
   closeModalFormCateg() {
     this.modalFormCateg.dismiss();
+    this.clearSelectionCategGtn();
   }
 
   openModalDtProd(item: any) {
@@ -110,7 +115,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   closeModalDtProd() {
-    this.modalDtProd.dismiss()
+    this.modalDtProd.dismiss();
   }
 
   getPromocPro(product: any) {
@@ -143,7 +148,7 @@ export class GtnProductsPage implements OnInit {
       this.http.post(url, categData, { headers }).subscribe(
         (response) => {
           if (response != null) {
-            this.alertInsertCorrectly;
+            this.alertInsertCorrectly();
             this.closeModalFormCateg();
             this.recoverCategories();
             this.clearSelectionCategGtn();
@@ -183,7 +188,6 @@ export class GtnProductsPage implements OnInit {
         }
       );
     }
-
   }
 
   selectCategChange() {
@@ -200,6 +204,7 @@ export class GtnProductsPage implements OnInit {
           this.nom_categ = response.nom_categ;
           this.descr_categ = response.descrip_categ;
           this.btnNameGtnCateg = "Modificar"
+          this.isDisabledBtnElim = false;
         }
       },
       (error) => {
@@ -208,11 +213,19 @@ export class GtnProductsPage implements OnInit {
     );
   }
 
-  handleButtonClick() {
+  handleBtnGtnCateg() {
     if (this.btnNameGtnCateg === 'Registrar') {
       this.insertCategoria();
     } else if (this.btnNameGtnCateg === 'Modificar') {
       this.modificarCategoria(this.selectedOptCategGtn);
+    }
+  }
+
+  handleBtnFormProd() {
+    if (this.nameBtnModalForm === 'Crear Producto') {
+      this.insertProduct();
+    } else  {
+      this.updateProduct(this.id_producto);
     }
   }
 
@@ -233,12 +246,14 @@ export class GtnProductsPage implements OnInit {
   addProducts() {
     this.titleModalForm = "Nuevo Producto";
     this.nameBtnModalForm = "Crear Producto";
+    this.isDisabledInpCodProd = false;
     this.openModalForm();
   }
 
-  updateProducts() {
+  setTitleFormProd() {
     this.titleModalForm = "Modificar Producto";
     this.nameBtnModalForm = "Modificar Producto";
+    this.isDisabledInpCodProd = true;
     this.openModalForm();
   }
 
@@ -313,7 +328,7 @@ export class GtnProductsPage implements OnInit {
     return true;
   }
 
-  addProduct() {
+  insertProduct() {
     if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
       this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
 
@@ -353,6 +368,43 @@ export class GtnProductsPage implements OnInit {
         this.alertCodBarras();
         this.codigo_barras = "";
       }
+    }
+  }
+
+  updateProduct(id_prod: string) {
+    if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
+      this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
+
+        const url = 'http://localhost:8080/product/modif-product/' + id_prod;
+        const id_categ = this.selectedOptionCateg;
+        const id_promocio = this.selectedOptionProm;
+        const id_categ_iva = this.selectedOptionIVA;
+
+        const dataProd = JSON.stringify({
+          id_promocion: id_promocio,
+          id_categ: id_categ,
+          id_categ_iva: id_categ_iva,
+          nom_producto: this.nom_producto,
+          descrip_prod: this.descrip_prod,
+          precio: this.precio,
+          unidades_dispon: this.unidades_dispon,
+          codigo_barras: this.codigo_barras,
+        });
+  
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+
+        this.http.put(url, dataProd, { headers }).subscribe(
+          (response: any) => {
+            this.alertInsertCorrectly();
+            this.closeModalForm();
+            this.loadProducts();
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
     }
   }
 
@@ -431,6 +483,7 @@ export class GtnProductsPage implements OnInit {
   clearSelectionCategGtn() {
     this.selectedOptCategGtn = null;
     this.btnNameGtnCateg = "Registrar"
+    this.isDisabledBtnElim = true;
     this.clearInputsGtnCateg();
   }
 
@@ -447,22 +500,28 @@ export class GtnProductsPage implements OnInit {
     this.closeModalForm();
   }
 
-  loadDataList() {
-
-  }
-
-
   deleteItem(item: any) {
 
   }
 
   editItem(item: any) {
-    this.updateProducts()
+    this.loadDataProd(item);
+    this.setTitleFormProd();
+  }
+
+  loadDataProd(item: any) {
+    this.id_producto = item.id_producto;
+    this.codigo_barras = item.codigo_barras;
+    this.nom_producto = item.nom_producto;
+    this.descrip_prod = item.descrip_prod;
+    this.precio = item.precio;
+    this.unidades_dispon = item.unidades_dispon;
+    this.selectedOptionCateg = item.id_categ;
+    this.selectedOptionIVA = item.id_categ_iva;
+    this.selectedOptionProm = item.id_promocion;
   }
 
   toggleBackdrop() {
     this.showBackdrop = !this.showBackdrop;
   }
-
-
 }
