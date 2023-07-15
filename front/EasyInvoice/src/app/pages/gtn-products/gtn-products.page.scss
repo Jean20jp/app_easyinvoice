@@ -183,16 +183,14 @@ ion-button {
   border-radius: 15px;
   margin-bottom: 10px;
   width: 170px;
-  margin-right: 27px;
   --background: #3d648d;
   border: 2px solid white;
-  margin-left: -3px;
   color: white;
 }
 
 .inputNum {
   width: 150px;
-  height: 48px;
+  height: 55px;
   --background: #3d648d;
   border: 2px solid white;
   border-radius: 14px;
@@ -212,7 +210,19 @@ ion-button {
 
 .inputSelectSmall {
   width: 290px;
-  height: 46px;
+  height: 58px;
+  border-radius: 12px;
+  border: 2px solid white;
+  --background: #3d648d;
+  margin-left: 0px;
+  color: white;
+}
+
+.inputSelectCateg {
+  width: 360px;
+  height: 60px;
+  margin-top: 20px;
+  margin-bottom: 10px;
   border-radius: 12px;
   border: 2px solid white;
   --background: #3d648d;

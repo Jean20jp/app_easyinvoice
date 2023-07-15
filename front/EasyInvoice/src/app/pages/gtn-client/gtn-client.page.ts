@@ -16,6 +16,7 @@ export class GtnClientPage implements OnInit {
 
   showBackdrop: boolean = false;
 
+  id_cliente!: string
   num_ident!: string;
   nomb_cli!: string;
   apell_cli!: string;
@@ -26,6 +27,9 @@ export class GtnClientPage implements OnInit {
   itemsClieFilterAux: any[] = [];
   items: any[] = [];
   private listWithOutFilter: any[] = [];
+
+  isDisabledInpTipDni!: boolean;
+  isDisabledInpNumDni!: boolean;
 
   selectedItems: any[] = [];
   selectedItem!: any;
@@ -43,7 +47,7 @@ export class GtnClientPage implements OnInit {
   ngOnInit() {
   }
 
-  async alertClieAddCorrect() {
+  async alertInsertCorrectly() {
     const toast = await this.toastController.create({
       message: 'Cliente registrado correctamente',
       duration: 3000, // Duración en milisegundos
@@ -116,6 +120,8 @@ export class GtnClientPage implements OnInit {
   addProducts() {
     this.titleModalForm = "Registrar Cliente";
     this.nameBtnModalForm = "Registrar";
+    this.isDisabledInpTipDni = false;
+    this.isDisabledInpNumDni = false;
     this.openModalForm();
   }
 
@@ -158,7 +164,7 @@ export class GtnClientPage implements OnInit {
     }
   }
 
-  addClient() {
+  insertClient() {
     if (this.isEmptyInput(this.num_ident, this.nomb_cli, this.apell_cli, this.email_cli,
       this.direc_cli, this.telef_cli, this.selectedTipDni)) {
 
@@ -182,7 +188,7 @@ export class GtnClientPage implements OnInit {
         this.http.post(url, customerData, { headers }).subscribe(
           (response) => {
             if (response != null) {
-              this.alertClieAddCorrect();
+              this.alertInsertCorrectly();
               this.closeModalForm();
               this.loadClients();
               this.clearInputs();
@@ -196,6 +202,39 @@ export class GtnClientPage implements OnInit {
         this.alertNumIdent();
         this.num_ident = "";
       }
+    }
+  }
+
+  updateProduct(id_prod: string) {
+    if (this.isEmptyInput(this.num_ident, this.nomb_cli, this.apell_cli, this.email_cli,
+                            this.direc_cli, this.telef_cli, this.selectedTipDni)) {
+
+        const url = 'http://localhost:8080/customer/' + id_prod;
+
+        const dataClient = JSON.stringify({
+          id_tip_dni: this.selectedTipDni,
+          num_ident: this.num_ident,
+          nomb_cli: this.nomb_cli,
+          apell_cli: this.apell_cli,
+          email_cli: this.email_cli,
+          direc_cli: this.direc_cli,
+          telef_cli: this.telef_cli,
+        });
+  
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+
+        this.http.put(url, dataClient, { headers }).subscribe(
+          (response: any) => {
+            this.alertInsertCorrectly();
+            this.closeModalForm();
+            this.loadClients();
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
     }
   }
 
@@ -219,12 +258,50 @@ export class GtnClientPage implements OnInit {
     }
   }
 
+  handleBtnFormClient() {
+    if (this.nameBtnModalForm === 'Registrar') {
+      this.insertClient();
+    } else  {
+      this.updateProduct(this.id_cliente);
+    }
+  }
+
+  getNomTipDni(id: string) {
+    if (id == "1") {
+      return "Cédula";
+    } else if (id == "2") {
+      return "RUC";
+    } else {
+      return "Pasaporte";
+    }
+  }
+
+  setTitleFormCli() {
+    this.titleModalForm = "Modificar Cliente";
+    this.nameBtnModalForm = "Modificar";
+    this.isDisabledInpTipDni = true;
+    this.isDisabledInpNumDni = true;
+    this.openModalForm();
+  }
+
+  loadDataClient(item: any) {
+    this.selectedTipDni = this.getNomTipDni(item.id_tip_dni);
+    this.id_cliente = item.id_cliente;
+    this.num_ident = item.num_ident;
+    this.nomb_cli = item.nomb_cli;
+    this.apell_cli = item.apell_cli;
+    this.email_cli = item.email_cli;
+    this.direc_cli = item.direc_cli;
+    this.telef_cli = item.telef_cli;
+  }
+
   deleteItem(item: any) {
 
   }
 
   editItem(item: any) {
-    //this.updateProducts()
+    this.setTitleFormCli();
+    this.loadDataClient(item);
   }
 
   goBack() {
