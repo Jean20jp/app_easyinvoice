@@ -126,7 +126,7 @@ export class GtnClientPage implements OnInit {
   }
 
   loadClients() {
-    const url = 'http://localhost:8080/customer';
+    const url = 'http://localhost:8080/customer/get-customer';
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
@@ -169,7 +169,7 @@ export class GtnClientPage implements OnInit {
       this.direc_cli, this.telef_cli, this.selectedTipDni)) {
 
       if (this.validateNumIden(this.num_ident)) {
-        const url = 'http://localhost:8080/customer';
+        const url = 'http://localhost:8080/customer/save-customer';
         const id_tip_dni = this.getIdTipDni(this.selectedTipDni);
         const customerData = JSON.stringify({
           id_tip_dni: id_tip_dni,
@@ -205,11 +205,11 @@ export class GtnClientPage implements OnInit {
     }
   }
 
-  updateProduct(id_prod: string) {
+  updateClient(id_prod: string) {
     if (this.isEmptyInput(this.num_ident, this.nomb_cli, this.apell_cli, this.email_cli,
                             this.direc_cli, this.telef_cli, this.selectedTipDni)) {
 
-        const url = 'http://localhost:8080/customer/' + id_prod;
+        const url = 'http://localhost:8080/customer/modif-customer/' + id_prod;
 
         const dataClient = JSON.stringify({
           id_tip_dni: this.selectedTipDni,
@@ -262,7 +262,7 @@ export class GtnClientPage implements OnInit {
     if (this.nameBtnModalForm === 'Registrar') {
       this.insertClient();
     } else  {
-      this.updateProduct(this.id_cliente);
+      this.updateClient(this.id_cliente);
     }
   }
 

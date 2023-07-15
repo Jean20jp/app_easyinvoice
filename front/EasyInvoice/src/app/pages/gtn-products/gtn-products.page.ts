@@ -28,6 +28,7 @@ export class GtnProductsPage implements OnInit {
   @ViewChild('modalForm') modalForm!: IonModal;
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
   @ViewChild('modalFormCateg') modalFormCateg!: IonModal;
+  @ViewChild('modalFormIVA') modalFormIVA!: IonModal;
 
   showBackdrop: boolean = false;
 
@@ -49,9 +50,13 @@ export class GtnProductsPage implements OnInit {
   selectedOptionProm: any;
 
   selectedOptCategGtn: any;
+  selectedOptIVAGtn: any;
   nom_categ!: string;
   descr_categ!: string;
   btnNameGtnCateg: string = "Registrar";
+  btnNameGtnIVA: string = "Registrar";
+  nom_iva!: string;
+  valor_iva!: any;
 
   constructor(private http: HttpClient, private toastController: ToastController) {
     this.recoverCategories();
@@ -102,9 +107,18 @@ export class GtnProductsPage implements OnInit {
     this.modalFormCateg.present();
   }
 
+  openModalFormIVA() {
+    this.modalFormIVA.present();
+  }
+
   closeModalFormCateg() {
     this.modalFormCateg.dismiss();
     this.clearSelectionCategGtn();
+  }
+
+  closeModalFormIVA() {
+    this.modalFormIVA.dismiss();
+    this.clearSelectionIVAGtn();
   }
 
   openModalDtProd(item: any) {
@@ -190,9 +204,44 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
+  insertIVA() {
+    if (this.isEmptyInputGtnIVA(this.nom_iva, this.valor_iva)) {
+      const url = "http://localhost:8080/iva/save-iva"
+      const ivaData = JSON.stringify({
+        nomb_categ_iva: this.nom_iva,
+        valor: this.valor_iva,
+        est_categ_iva: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      this.http.post(url, ivaData, { headers }).subscribe(
+        (response) => {
+          if (response != null) {
+            this.alertInsertCorrectly();
+            this.closeModalFormIVA();
+            this.recoverCategIva();
+            this.clearSelectionIVAGtn();
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
   selectCategChange() {
     if (this.selectedOptCategGtn) {
       this.getCategId(this.selectedOptCategGtn);
+    }
+  }
+
+  selectIVAChange() {
+    if (this.selectedOptIVAGtn) {
+      this.getIVAId(this.selectedOptIVAGtn);
     }
   }
 
@@ -213,11 +262,36 @@ export class GtnProductsPage implements OnInit {
     );
   }
 
+  getIVAId(id: string) {
+    const url = 'http://localhost:8080/iva/' + id;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.nom_iva = response.nomb_categ_iva;
+          this.valor_iva = response.valor;
+          this.btnNameGtnIVA = "Modificar"
+          this.isDisabledBtnElim = false;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
   handleBtnGtnCateg() {
     if (this.btnNameGtnCateg === 'Registrar') {
       this.insertCategoria();
-    } else if (this.btnNameGtnCateg === 'Modificar') {
+    } else {
       this.modificarCategoria(this.selectedOptCategGtn);
+    }
+  }
+
+  handleBtnGtnIVA() {
+    if (this.btnNameGtnIVA === 'Registrar') {
+      //this.insertCategoria();
+    } else {
+      //this.modificarCategoria(this.selectedOptCategGtn);
     }
   }
 
@@ -295,9 +369,24 @@ export class GtnProductsPage implements OnInit {
     this.descr_categ = ""
   }
 
+  clearInputsGtnIVA() {
+    this.nom_iva = "";
+    this.valor_iva = ""
+  }
+
   isEmptyInputGtnCateg(nom_categ: string, descr_categ: string) {
     if (!nom_categ || !descr_categ || /^\s+|\s+$/g.test(nom_categ)
       || /^\s+|\s+$/g.test(descr_categ)) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  isEmptyInputGtnIVA(nom_iva: string, valor_iva: any) {
+    if (!nom_iva || !valor_iva || /^\s+|\s+$/g.test(nom_iva)
+      || /^\s+|\s+$/g.test(valor_iva)) {
       this.alertInputEmpty();
       return false;
     } else {
@@ -438,7 +527,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   recoverCategIva() {
-    const url = "http://localhost:8080/iva";
+    const url = "http://localhost:8080/iva/get-iva";
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
@@ -452,7 +541,7 @@ export class GtnProductsPage implements OnInit {
   }
 
   recoverCategProm() {
-    const url = "http://localhost:8080/promotion";
+    const url = "http://localhost:8080/promotion/get-promotion";
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
@@ -487,10 +576,16 @@ export class GtnProductsPage implements OnInit {
     this.clearInputsGtnCateg();
   }
 
+  clearSelectionIVAGtn() {
+    this.selectedOptIVAGtn = null;
+    this.btnNameGtnIVA = "Registrar"
+    this.isDisabledBtnElim = true;
+    this.clearInputsGtnIVA();
+  }
+
   clearSelectionIVA() {
     this.selectedOptionIVA = null;
   }
-
 
   clearSelectionProm() {
     this.selectedOptionProm = null;
