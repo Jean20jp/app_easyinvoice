@@ -23,6 +23,7 @@ public class ProductController {
     }
     @PostMapping("/save-product")
     public ProductModel saveProduct(@RequestBody ProductModel product) {
+        System.out.println(product.getEst_producto());
         return this.productService.saveProduct(product);
     }
 

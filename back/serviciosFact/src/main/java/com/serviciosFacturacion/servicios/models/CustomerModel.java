@@ -28,6 +28,16 @@ public class CustomerModel {
     private String direc_cli;
     @Column
     private String telef_cli;
+    @Column
+    private  Byte est_cliente;
+
+    public Byte getEst_cliente() {
+        return est_cliente;
+    }
+
+    public void setEst_cliente(Byte est_cliente) {
+        this.est_cliente = est_cliente;
+    }
 
     public Long getId_cliente() {
         return id_cliente;

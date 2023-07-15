@@ -41,6 +41,7 @@ public class CustomerService {
             customer.setEmail_cli(request.getEmail_cli());
             customer.setDirec_cli(request.getDirec_cli());
             customer.setTelef_cli(request.getTelef_cli());
+            customer.setEst_cliente(request.getEst_cliente());
         }
         return customer;
     }
