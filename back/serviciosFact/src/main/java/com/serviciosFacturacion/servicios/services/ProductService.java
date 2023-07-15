@@ -42,6 +42,7 @@ public class ProductService {
             product.setPrecio(request.getPrecio());
             product.setUnidades_dispon(request.getUnidades_dispon());
             product.setCodigo_barras(request.getCodigo_barras());
+            product.setEst_producto(request.getEst_producto());
         }
         return product;
     }

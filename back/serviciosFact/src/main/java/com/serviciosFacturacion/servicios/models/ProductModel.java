@@ -25,6 +25,16 @@ public class ProductModel {
     private int unidades_dispon;
     @Column
     private String codigo_barras;
+    @Column
+    private  Byte est_producto;
+
+    public Byte getEst_producto() {
+        return est_producto;
+    }
+
+    public void setEst_producto(Byte est_producto) {
+        this.est_producto = est_producto;
+    }
 
     public Long getId_producto() {
         return id_producto;

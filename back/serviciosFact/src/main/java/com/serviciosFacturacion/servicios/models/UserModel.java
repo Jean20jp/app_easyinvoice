@@ -30,8 +30,6 @@ public class UserModel {
     private byte tip_usuario ;
     @Column
     private String contrasenia ;
-    @Column
-    private Byte foto ;
 
     public Long getId_usuario() {
         return id_usuario;
@@ -129,11 +127,5 @@ public class UserModel {
         this.contrasenia = contrasenia;
     }
 
-    public Byte getFoto() {
-        return foto;
-    }
 
-    public void setFoto(Byte foto) {
-        this.foto = foto;
-    }
 }

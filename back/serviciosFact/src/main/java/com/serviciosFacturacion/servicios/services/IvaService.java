@@ -1,5 +1,6 @@
 package com.serviciosFacturacion.servicios.services;
 
+import com.serviciosFacturacion.servicios.models.CategoryModel;
 import com.serviciosFacturacion.servicios.models.IvaModel;
 import com.serviciosFacturacion.servicios.repositories.IIVaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class IvaService {
 
             iva.setNomb_categ_iva(request.getNomb_categ_iva());
             iva.setValor(request.getValor());
-
+            iva.setEst_categ_iva(request.getEst_categ_iva());
         }
         return iva;
     }
@@ -54,6 +55,13 @@ public class IvaService {
         }
     }
 
+    public IvaModel updateIva(IvaModel iva) {
+        return iVaRepository.save(iva);
+    }
+
+    public IvaModel findById(Long id_categ_iva ) {
+        return iVaRepository.findById(id_categ_iva).orElse(null);
+    }
 
 
 }

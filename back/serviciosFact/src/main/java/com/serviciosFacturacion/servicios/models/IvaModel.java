@@ -16,6 +16,17 @@ public class IvaModel {
     @Column
     private double valor;
 
+    @Column
+    private Byte est_categ_iva;
+
+    public Byte getEst_categ_iva() {
+        return est_categ_iva;
+    }
+
+    public void setEst_categ_iva(Byte est_categ_iva) {
+        this.est_categ_iva = est_categ_iva;
+    }
+
     public Long getId_categ_iva() {
         return id_categ_iva;
     }

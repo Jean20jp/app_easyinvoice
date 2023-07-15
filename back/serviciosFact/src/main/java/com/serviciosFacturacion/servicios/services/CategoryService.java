@@ -2,6 +2,7 @@ package com.serviciosFacturacion.servicios.services;
 
 
 import com.serviciosFacturacion.servicios.models.CategoryModel;
+import com.serviciosFacturacion.servicios.models.PromotionModel;
 import com.serviciosFacturacion.servicios.repositories.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class CategoryService {
         if (category != null) {
             category.setNom_categ(request.getNom_categ());
             category.setDescrip_categ(request.getDescrip_categ());
-            category.setParent_id(request.getParent_id());
+            category.setEst_categ(request.getEst_categ());
         }
         return category;
     }
@@ -53,6 +54,13 @@ public class CategoryService {
         }catch (Exception e){
             return  false;
         }
+    }
+    public CategoryModel updateCategory(CategoryModel category) {
+        return categoryRepository.save(category);
+    }
+
+    public CategoryModel findById(Long id_categ) {
+        return categoryRepository.findById(id_categ).orElse(null);
     }
 
 }
