@@ -152,7 +152,7 @@ export class GtnProductsPage implements OnInit {
       const categData = JSON.stringify({
         nom_categ: this.nom_categ,
         descrip_categ: this.descr_categ,
-        parent_id: null,
+        est_categ: 1,
       });
 
       const headers = {
@@ -233,6 +233,35 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
+  modificarIVA(id: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_iva, this.valor_iva)) {
+
+      const url = 'http://localhost:8080/iva/modif-iva/' + id;
+
+      const dataIVA = JSON.stringify({
+        nomb_categ_iva: this.nom_iva,
+        valor: this.valor_iva,
+        est_categ_iva: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataIVA, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalFormIVA();
+          this.recoverCategIva();
+          this.clearSelectionIVAGtn();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
   selectCategChange() {
     if (this.selectedOptCategGtn) {
       this.getCategId(this.selectedOptCategGtn);
@@ -289,9 +318,9 @@ export class GtnProductsPage implements OnInit {
 
   handleBtnGtnIVA() {
     if (this.btnNameGtnIVA === 'Registrar') {
-      //this.insertCategoria();
+      this.insertIVA();
     } else {
-      //this.modificarCategoria(this.selectedOptCategGtn);
+      this.modificarIVA(this.selectedOptIVAGtn);
     }
   }
 
@@ -435,6 +464,7 @@ export class GtnProductsPage implements OnInit {
           precio: this.precio,
           unidades_dispon: this.unidades_dispon,
           codigo_barras: this.codigo_barras,
+          est_producto: 1,
         });
 
         const headers = {
@@ -502,7 +532,7 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.items = response;
+          this.items = response.filter(prod => prod.est_producto !== 0);
           this.listWithOutFilter = this.items;
         }
       },
@@ -515,9 +545,9 @@ export class GtnProductsPage implements OnInit {
   recoverCategories() {
     const url = "http://localhost:8080/category/get-category";
     this.http.get<any[]>(url).subscribe(
-      (response) => {
+      (response: any[]) => {
         if (response !== null) {
-          this.optionsCateg = response;
+          this.optionsCateg = response.filter(ctg => ctg.est_categ !== 0);
         }
       },
       (error) => {
@@ -531,7 +561,7 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsIva = response;
+          this.optionsIva = response.filter(iva => iva.est_categ_iva !== 0);
         }
       },
       (error) => {
@@ -545,7 +575,7 @@ export class GtnProductsPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsProm = response;
+          this.optionsProm = response.filter(prom => prom.est_prom !== 0);
         }
       },
       (error) => {

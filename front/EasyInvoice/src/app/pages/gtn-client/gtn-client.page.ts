@@ -130,7 +130,7 @@ export class GtnClientPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.items = response;
+          this.items = response.filter(clie => clie.est_cliente !== 0);
           this.listWithOutFilter = this.items;
         }
       },
@@ -179,6 +179,7 @@ export class GtnClientPage implements OnInit {
           email_cli: this.email_cli,
           direc_cli: this.direc_cli,
           telef_cli: this.telef_cli,
+          est_cliente: 1,
         });
 
         const headers = {
