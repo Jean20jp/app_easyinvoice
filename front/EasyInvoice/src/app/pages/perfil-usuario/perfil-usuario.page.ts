@@ -89,7 +89,7 @@ export class PerfilUsuarioPage implements OnInit {
             foto: this.receivedData.foto
           });
 
-          this.consumeService(dataUser);
+          this.consumeServiceChangePass(dataUser);
 
         } else {
 
@@ -107,8 +107,8 @@ export class PerfilUsuarioPage implements OnInit {
     }
   }
 
-  consumeService(dataUser: string) {
-    const url = 'http://localhost:8080/user/' + this.receivedData.id_usuario;
+  consumeServiceChangePass(dataUser: string) {
+    const url = 'http://localhost:8080/user/modif-user/' + this.receivedData.id_usuario;
     const headers = {
       'Content-Type': 'application/json',
     };
