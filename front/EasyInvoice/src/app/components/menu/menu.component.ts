@@ -12,7 +12,7 @@ export class MenuComponent implements OnInit {
     { name: 'Gestión \nProductos', image: 'assets/icon/icon-gtnproducts.svg', redirect:"gtn-products" },
     { name: 'Gestión \nClientes', image: 'assets/icon/icon-gtnclient.svg', redirect:"gtn-client" },
     { name: 'Facturar', image: 'assets/icon/icon-facturar.svg', redirect:"#" },
-    { name: 'Gestión \nEstablecimiento', image: 'assets/icon/icon-gtnestablec.svg' , redirect:""},
+    { name: 'Gestión \nEstablecimiento', image: 'assets/icon/icon-gtnestablec.svg' , redirect:"#"},
     { name: 'Cerrar Sesión', image: 'assets/icon/icon-logout.svg', redirect:"login" }
   ];
 

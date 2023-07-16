@@ -29,6 +29,7 @@ export class GtnProductsPage implements OnInit {
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
   @ViewChild('modalFormCateg') modalFormCateg!: IonModal;
   @ViewChild('modalFormIVA') modalFormIVA!: IonModal;
+  @ViewChild('modalFormProm') modalFormProm!: IonModal;
 
   showBackdrop: boolean = false;
 
@@ -51,12 +52,17 @@ export class GtnProductsPage implements OnInit {
 
   selectedOptCategGtn: any;
   selectedOptIVAGtn: any;
+  selectedOptPromGtn: any;
   nom_categ!: string;
   descr_categ!: string;
   btnNameGtnCateg: string = "Registrar";
   btnNameGtnIVA: string = "Registrar";
+  btnNameGtnProm: string = "Registrar";
   nom_iva!: string;
   valor_iva!: any;
+  nom_prom!: string;
+  descr_prom!: string;
+  valor_prom!: any;
 
   constructor(private http: HttpClient, private toastController: ToastController) {
     this.recoverCategories();
@@ -111,6 +117,10 @@ export class GtnProductsPage implements OnInit {
     this.modalFormIVA.present();
   }
 
+  openModalFormProm() {
+    this.modalFormProm.present();
+  }
+
   closeModalFormCateg() {
     this.modalFormCateg.dismiss();
     this.clearSelectionCategGtn();
@@ -119,6 +129,11 @@ export class GtnProductsPage implements OnInit {
   closeModalFormIVA() {
     this.modalFormIVA.dismiss();
     this.clearSelectionIVAGtn();
+  }
+
+  closeModalFormProm() {
+    this.modalFormProm.dismiss();
+    this.clearSelectionPromGtn();
   }
 
   openModalDtProd(item: any) {
@@ -262,6 +277,66 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
+  insertProm() {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+      const url = "http://localhost:8080/promotion/save-promotion"
+      const promotionData = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      this.http.post(url, promotionData, { headers }).subscribe(
+        (response) => {
+          if (response != null) {
+            this.alertInsertCorrectly();
+            this.closeModalFormProm();
+            this.recoverCategProm();
+            this.clearSelectionPromGtn();
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  modificarProm(id: string) {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+
+      const url = 'http://localhost:8080/promotion/modif-promotion/' + id;
+
+      const dataPromotion = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataPromotion, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalFormProm();
+          this.recoverCategProm();
+          this.clearSelectionPromGtn();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
   selectCategChange() {
     if (this.selectedOptCategGtn) {
       this.getCategId(this.selectedOptCategGtn);
@@ -271,6 +346,12 @@ export class GtnProductsPage implements OnInit {
   selectIVAChange() {
     if (this.selectedOptIVAGtn) {
       this.getIVAId(this.selectedOptIVAGtn);
+    }
+  }
+
+  selectPromChange() {
+    if (this.selectedOptPromGtn) {
+      this.getPromId(this.selectedOptPromGtn);
     }
   }
 
@@ -308,6 +389,24 @@ export class GtnProductsPage implements OnInit {
     );
   }
 
+  getPromId(id: string) {
+    const url = 'http://localhost:8080/promotion/' + id;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.nom_prom = response.nom_prom;
+          this.descr_prom = response.descrip_prom;
+          this.valor_prom = response.porcentaje_desc;
+          this.btnNameGtnProm = "Modificar"
+          this.isDisabledBtnElim = false;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
   handleBtnGtnCateg() {
     if (this.btnNameGtnCateg === 'Registrar') {
       this.insertCategoria();
@@ -324,10 +423,18 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
+  handleBtnGtnProm() {
+    if (this.btnNameGtnProm === 'Registrar') {
+      this.insertProm();
+    } else {
+      this.modificarProm(this.selectedOptPromGtn);
+    }
+  }
+
   handleBtnFormProd() {
     if (this.nameBtnModalForm === 'Crear Producto') {
       this.insertProduct();
-    } else  {
+    } else {
       this.updateProduct(this.id_producto);
     }
   }
@@ -403,6 +510,12 @@ export class GtnProductsPage implements OnInit {
     this.valor_iva = ""
   }
 
+  clearInputsGtnProm() {
+    this.nom_prom = "";
+    this.descr_prom = ""
+    this.valor_prom = ""
+  }
+
   isEmptyInputGtnCateg(nom_categ: string, descr_categ: string) {
     if (!nom_categ || !descr_categ || /^\s+|\s+$/g.test(nom_categ)
       || /^\s+|\s+$/g.test(descr_categ)) {
@@ -416,6 +529,16 @@ export class GtnProductsPage implements OnInit {
   isEmptyInputGtnIVA(nom_iva: string, valor_iva: any) {
     if (!nom_iva || !valor_iva || /^\s+|\s+$/g.test(nom_iva)
       || /^\s+|\s+$/g.test(valor_iva)) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  isEmptyInputGtnProm(nom_prom: string, descr_prom: string, valor_prom: any) {
+    if (!nom_prom || !descr_prom || !valor_prom || /^\s+|\s+$/g.test(nom_prom)
+      || /^\s+|\s+$/g.test(descr_prom) || /^\s+|\s+$/g.test(valor_prom)) {
       this.alertInputEmpty();
       return false;
     } else {
@@ -494,36 +617,36 @@ export class GtnProductsPage implements OnInit {
     if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
       this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
 
-        const url = 'http://localhost:8080/product/modif-product/' + id_prod;
-        const id_categ = this.selectedOptionCateg;
-        const id_promocio = this.selectedOptionProm;
-        const id_categ_iva = this.selectedOptionIVA;
+      const url = 'http://localhost:8080/product/modif-product/' + id_prod;
+      const id_categ = this.selectedOptionCateg;
+      const id_promocio = this.selectedOptionProm;
+      const id_categ_iva = this.selectedOptionIVA;
 
-        const dataProd = JSON.stringify({
-          id_promocion: id_promocio,
-          id_categ: id_categ,
-          id_categ_iva: id_categ_iva,
-          nom_producto: this.nom_producto,
-          descrip_prod: this.descrip_prod,
-          precio: this.precio,
-          unidades_dispon: this.unidades_dispon,
-          codigo_barras: this.codigo_barras,
-        });
-  
-        const headers = {
-          'Content-Type': 'application/json',
-        };
+      const dataProd = JSON.stringify({
+        id_promocion: id_promocio,
+        id_categ: id_categ,
+        id_categ_iva: id_categ_iva,
+        nom_producto: this.nom_producto,
+        descrip_prod: this.descrip_prod,
+        precio: this.precio,
+        unidades_dispon: this.unidades_dispon,
+        codigo_barras: this.codigo_barras,
+      });
 
-        this.http.put(url, dataProd, { headers }).subscribe(
-          (response: any) => {
-            this.alertInsertCorrectly();
-            this.closeModalForm();
-            this.loadProducts();
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataProd, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalForm();
+          this.loadProducts();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
     }
   }
 
@@ -611,6 +734,13 @@ export class GtnProductsPage implements OnInit {
     this.btnNameGtnIVA = "Registrar"
     this.isDisabledBtnElim = true;
     this.clearInputsGtnIVA();
+  }
+
+  clearSelectionPromGtn() {
+    this.selectedOptPromGtn = null;
+    this.btnNameGtnProm = "Registrar"
+    this.isDisabledBtnElim = true;
+    this.clearInputsGtnProm();
   }
 
   clearSelectionIVA() {
