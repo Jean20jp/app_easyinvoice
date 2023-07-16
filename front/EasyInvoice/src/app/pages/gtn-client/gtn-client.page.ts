@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IonModal } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -40,7 +40,7 @@ export class GtnClientPage implements OnInit {
   selectedTipDni: any;
   optionsTipDni: any[] = ["Cédula", "RUC", "Pasaporte"];
 
-  constructor(private http: HttpClient, private toastController: ToastController) {
+  constructor(private alertController: AlertController, private http: HttpClient, private toastController: ToastController) {
     this.loadClients();
   }
 
@@ -76,6 +76,36 @@ export class GtnClientPage implements OnInit {
     toast.present();
   }
 
+  async alertDelete() {
+    const toast = await this.toastController.create({
+      message: 'Se eliminó correctamente',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom', // Posición del mensaje ('top', 'middle', o 'bottom')
+    });
+    toast.present();
+  }
+
+  async presentAlert(item: any) {
+    const alert = await this.alertController.create({
+      header: '¿Desea eliminar el cliente?',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+        },
+        {
+          text: 'Sí',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.deleteClient(item);
+          }
+        },
+      ]
+    });
+
+    await alert.present();
+  }
+
   selectItem(item: any) {
     const index = this.selectedItems.indexOf(item);
     if (index > -1) {
@@ -103,7 +133,7 @@ export class GtnClientPage implements OnInit {
   }
 
   closeModalForm() {
-    this.clearInputs();     
+    this.clearInputs();
     this.modalForm.dismiss();
   }
 
@@ -117,7 +147,7 @@ export class GtnClientPage implements OnInit {
     this.clearSelection();
   }
 
-  addProducts() {
+  addClients() {
     this.titleModalForm = "Registrar Cliente";
     this.nameBtnModalForm = "Registrar";
     this.isDisabledInpTipDni = false;
@@ -206,38 +236,70 @@ export class GtnClientPage implements OnInit {
     }
   }
 
-  updateClient(id_prod: string) {
+  updateClient(id_clie: string) {
     if (this.isEmptyInput(this.num_ident, this.nomb_cli, this.apell_cli, this.email_cli,
-                            this.direc_cli, this.telef_cli, this.selectedTipDni)) {
+      this.direc_cli, this.telef_cli, this.selectedTipDni)) {
 
-        const url = 'http://localhost:8080/customer/modif-customer/' + id_prod;
+      const url = 'http://localhost:8080/customer/modif-customer/' + id_clie;
 
-        const dataClient = JSON.stringify({
-          id_tip_dni: this.selectedTipDni,
-          num_ident: this.num_ident,
-          nomb_cli: this.nomb_cli,
-          apell_cli: this.apell_cli,
-          email_cli: this.email_cli,
-          direc_cli: this.direc_cli,
-          telef_cli: this.telef_cli,
-        });
-  
-        const headers = {
-          'Content-Type': 'application/json',
-        };
+      const dataClient = JSON.stringify({
+        id_tip_dni: this.selectedTipDni,
+        num_ident: this.num_ident,
+        nomb_cli: this.nomb_cli,
+        apell_cli: this.apell_cli,
+        email_cli: this.email_cli,
+        direc_cli: this.direc_cli,
+        telef_cli: this.telef_cli,
+        est_cliente: 1,
+      });
 
-        this.http.put(url, dataClient, { headers }).subscribe(
-          (response: any) => {
-            this.alertInsertCorrectly();
-            this.closeModalForm();
-            this.loadClients();
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataClient, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalForm();
+          this.loadClients();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
     }
   }
+
+  deleteClient(item: any) {
+
+    const url = 'http://localhost:8080/customer/modif-customer/' + item.id_cliente;
+
+    const dataClient = JSON.stringify({
+      id_tip_dni: item.id_tip_dni,
+      num_ident: item.num_ident,
+      nomb_cli: item.nomb_cli,
+      apell_cli: item.apell_cli,
+      email_cli: item.email_cli,
+      direc_cli: item.direc_cli,
+      telef_cli: item.telef_cli,
+      est_cliente: 0,
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    this.http.put(url, dataClient, { headers }).subscribe(
+      (response: any) => {
+        this.alertDelete();
+        this.loadClients();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
 
   validateNumIden(num_ident: string) {
     for (const item of this.items) {
@@ -262,7 +324,7 @@ export class GtnClientPage implements OnInit {
   handleBtnFormClient() {
     if (this.nameBtnModalForm === 'Registrar') {
       this.insertClient();
-    } else  {
+    } else {
       this.updateClient(this.id_cliente);
     }
   }
@@ -297,7 +359,7 @@ export class GtnClientPage implements OnInit {
   }
 
   deleteItem(item: any) {
-
+    this.presentAlert(item);
   }
 
   editItem(item: any) {

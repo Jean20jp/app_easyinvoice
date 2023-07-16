@@ -298,7 +298,7 @@
                     </ion-item>
                   </ion-col>
                   <ion-col>
-                    <ion-icon class="iconAdd" name="add-outline"></ion-icon>
+                    <ion-icon (click)="openModalFormProm()" class="iconAdd" name="add-outline"></ion-icon>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -340,7 +340,7 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="Categorías"
+                        placeholder="Seleccione categoría para modifcar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptCategGtn"
                         (ionChange)="selectCategChange()"
@@ -396,7 +396,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
-                      >Eliminar
+                      (click)="actionDeleteCateg()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>
@@ -432,7 +432,7 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="IVA"
+                        placeholder="Seleccione IVA para modificar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptIVAGtn"
                         (ionChange)="selectIVAChange()"
@@ -488,7 +488,112 @@
                 <ion-row>
                   <ion-col>
                     <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
-                      >Eliminar
+                      (click)="actionDeleteIVA()" >Eliminar
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </div>
+
+  <div>
+    <ion-modal class="modalForm" #modalFormProm>
+      <ng-template>
+        <ion-content>
+          <div class="modalContentForm">
+            <div class="headModalForm">
+              <div>
+                <ion-icon
+                  class="iconBack"
+                  name="chevron-back-outline"
+                  (click)="closeModalFormProm()"
+                ></ion-icon>
+              </div>
+              <ion-text class="titleModal">Gestión promociones</ion-text>
+            </div>
+
+            <div>
+              <ion-grid>
+
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="inputSelectCateg">
+                      <ion-select
+                        interface="popover"
+                        placeholder="Seleccione promoción para modificar o eliminar"
+                        style="margin-top: -10px; margin-bottom: -10px"
+                        [(ngModel)]="selectedOptPromGtn"
+                        (ionChange)="selectPromChange()"
+                      >
+                        <ion-select-option
+                          *ngFor="let option of optionsProm"
+                          [value]="option.id_prom"
+                          >{{option.nom_prom}}</ion-select-option
+                        >
+                      </ion-select>
+                      <ion-icon
+                        name="close-circle"
+                        (click)="clearSelectionPromGtn()"
+                        *ngIf="selectedOptPromGtn"
+                      ></ion-icon>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="inputBig">
+                      <ion-input
+                        clearInput
+                        [(ngModel)]="nom_prom"
+                        type="text"
+                        placeholder="Nombre promoción"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="inputBig">
+                      <ion-input
+                        clearInput
+                        [(ngModel)]="descr_prom"
+                        type="text"
+                        placeholder="Descripción promoción"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="inputBig">
+                      <ion-input
+                        clearInput
+                        [(ngModel)]="valor_prom"
+                        type="numeric"
+                        placeholder="Valor porcentual del descuento"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+          
+                <ion-row>
+                  <ion-col>
+                    <ion-button (click)="handleBtnGtnProm()" class="btnVender"
+                      >{{btnNameGtnProm}}
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
+                      (click)="actionDeleteProm()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>

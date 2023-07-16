@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IonModal } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gtn-products',
@@ -29,6 +29,7 @@ export class GtnProductsPage implements OnInit {
   @ViewChild('modalDtProd') modalDtProd!: IonModal;
   @ViewChild('modalFormCateg') modalFormCateg!: IonModal;
   @ViewChild('modalFormIVA') modalFormIVA!: IonModal;
+  @ViewChild('modalFormProm') modalFormProm!: IonModal;
 
   showBackdrop: boolean = false;
 
@@ -51,14 +52,19 @@ export class GtnProductsPage implements OnInit {
 
   selectedOptCategGtn: any;
   selectedOptIVAGtn: any;
+  selectedOptPromGtn: any;
   nom_categ!: string;
   descr_categ!: string;
   btnNameGtnCateg: string = "Registrar";
   btnNameGtnIVA: string = "Registrar";
+  btnNameGtnProm: string = "Registrar";
   nom_iva!: string;
   valor_iva!: any;
+  nom_prom!: string;
+  descr_prom!: string;
+  valor_prom!: any;
 
-  constructor(private http: HttpClient, private toastController: ToastController) {
+  constructor(private alertController: AlertController, private http: HttpClient, private toastController: ToastController) {
     this.recoverCategories();
     this.recoverCategIva();
     this.recoverCategProm();
@@ -94,6 +100,36 @@ export class GtnProductsPage implements OnInit {
     toast.present();
   }
 
+  async alertDelete() {
+    const toast = await this.toastController.create({
+      message: 'Se eliminó correctamente',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom', // Posición del mensaje ('top', 'middle', o 'bottom')
+    });
+    toast.present();
+  }
+
+  async presentAlert(action: () => void, msj: any) {
+    const alert = await this.alertController.create({
+      header: '¿Desea eliminar ' + msj + '?',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+        },
+        {
+          text: 'Sí',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            action();
+          }
+        },
+      ]
+    });
+
+    await alert.present();
+  }
+
   openModalForm() {
     this.modalForm.present();
   }
@@ -111,6 +147,10 @@ export class GtnProductsPage implements OnInit {
     this.modalFormIVA.present();
   }
 
+  openModalFormProm() {
+    this.modalFormProm.present();
+  }
+
   closeModalFormCateg() {
     this.modalFormCateg.dismiss();
     this.clearSelectionCategGtn();
@@ -119,6 +159,11 @@ export class GtnProductsPage implements OnInit {
   closeModalFormIVA() {
     this.modalFormIVA.dismiss();
     this.clearSelectionIVAGtn();
+  }
+
+  closeModalFormProm() {
+    this.modalFormProm.dismiss();
+    this.clearSelectionPromGtn();
   }
 
   openModalDtProd(item: any) {
@@ -165,7 +210,6 @@ export class GtnProductsPage implements OnInit {
             this.alertInsertCorrectly();
             this.closeModalFormCateg();
             this.recoverCategories();
-            this.clearSelectionCategGtn();
           }
         },
         (error) => {
@@ -175,15 +219,15 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
-  modificarCategoria(id: string) {
+  modificarCategoria(id_categ: string) {
     if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
 
-      const url = 'http://localhost:8080/category/modif-category/' + id;
+      const url = 'http://localhost:8080/category/modif-category/' + id_categ;
 
       const dataCateg = JSON.stringify({
         nom_categ: this.nom_categ,
         descrip_categ: this.descr_categ,
-        parent_id: null,
+        est_categ: 1,
       });
 
       const headers = {
@@ -195,13 +239,46 @@ export class GtnProductsPage implements OnInit {
           this.alertInsertCorrectly();
           this.closeModalFormCateg();
           this.recoverCategories();
-          this.clearSelectionCategGtn();
         },
         (error) => {
           console.error(error);
         }
       );
     }
+  }
+
+  deleteCategoria(id_categ: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
+
+      const url = 'http://localhost:8080/category/modif-category/' + id_categ;
+
+      const dataCateg = JSON.stringify({
+        nom_categ: this.nom_categ,
+        descrip_categ: this.descr_categ,
+        est_categ: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataCateg, { headers }).subscribe(
+        (response: any) => {
+          this.closeModalFormCateg();
+          this.alertDelete();
+          this.recoverCategories();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteCateg() {
+    this.presentAlert(() => {
+      this.deleteCategoria(this.selectedOptCategGtn);
+    }, "la categoría")
   }
 
   insertIVA() {
@@ -223,7 +300,6 @@ export class GtnProductsPage implements OnInit {
             this.alertInsertCorrectly();
             this.closeModalFormIVA();
             this.recoverCategIva();
-            this.clearSelectionIVAGtn();
           }
         },
         (error) => {
@@ -253,13 +329,139 @@ export class GtnProductsPage implements OnInit {
           this.alertInsertCorrectly();
           this.closeModalFormIVA();
           this.recoverCategIva();
-          this.clearSelectionIVAGtn();
         },
         (error) => {
           console.error(error);
         }
       );
     }
+  }
+
+  deleteIVA(id: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_iva, this.valor_iva)) {
+
+      const url = 'http://localhost:8080/iva/modif-iva/' + id;
+
+      const dataIVA = JSON.stringify({
+        nomb_categ_iva: this.nom_iva,
+        valor: this.valor_iva,
+        est_categ_iva: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataIVA, { headers }).subscribe(
+        (response: any) => {
+          this.alertDelete();
+          this.closeModalFormIVA();
+          this.recoverCategIva();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteIVA() {
+    this.presentAlert(() => {
+      this.deleteIVA(this.selectedOptIVAGtn);
+    }, "el IVA")
+  }
+
+  insertProm() {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+      const url = "http://localhost:8080/promotion/save-promotion"
+      const promotionData = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      this.http.post(url, promotionData, { headers }).subscribe(
+        (response) => {
+          if (response != null) {
+            this.alertInsertCorrectly();
+            this.closeModalFormProm();
+            this.recoverCategProm();
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  modificarProm(id: string) {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+
+      const url = 'http://localhost:8080/promotion/modif-promotion/' + id;
+
+      const dataPromotion = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataPromotion, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalFormProm();
+          this.recoverCategProm();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  deleteProm(id: string) {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+
+      const url = 'http://localhost:8080/promotion/modif-promotion/' + id;
+
+      const dataPromotion = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataPromotion, { headers }).subscribe(
+        (response: any) => {
+          this.alertDelete();
+          this.closeModalFormProm();
+          this.recoverCategProm();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteProm() {
+    this.presentAlert(() => {
+      this.deleteProm(this.selectedOptPromGtn);
+    }, "la promoción")
   }
 
   selectCategChange() {
@@ -271,6 +473,12 @@ export class GtnProductsPage implements OnInit {
   selectIVAChange() {
     if (this.selectedOptIVAGtn) {
       this.getIVAId(this.selectedOptIVAGtn);
+    }
+  }
+
+  selectPromChange() {
+    if (this.selectedOptPromGtn) {
+      this.getPromId(this.selectedOptPromGtn);
     }
   }
 
@@ -308,6 +516,24 @@ export class GtnProductsPage implements OnInit {
     );
   }
 
+  getPromId(id: string) {
+    const url = 'http://localhost:8080/promotion/' + id;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.nom_prom = response.nom_prom;
+          this.descr_prom = response.descrip_prom;
+          this.valor_prom = response.porcentaje_desc;
+          this.btnNameGtnProm = "Modificar"
+          this.isDisabledBtnElim = false;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
   handleBtnGtnCateg() {
     if (this.btnNameGtnCateg === 'Registrar') {
       this.insertCategoria();
@@ -324,10 +550,18 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
+  handleBtnGtnProm() {
+    if (this.btnNameGtnProm === 'Registrar') {
+      this.insertProm();
+    } else {
+      this.modificarProm(this.selectedOptPromGtn);
+    }
+  }
+
   handleBtnFormProd() {
     if (this.nameBtnModalForm === 'Crear Producto') {
       this.insertProduct();
-    } else  {
+    } else {
       this.updateProduct(this.id_producto);
     }
   }
@@ -403,6 +637,12 @@ export class GtnProductsPage implements OnInit {
     this.valor_iva = ""
   }
 
+  clearInputsGtnProm() {
+    this.nom_prom = "";
+    this.descr_prom = ""
+    this.valor_prom = ""
+  }
+
   isEmptyInputGtnCateg(nom_categ: string, descr_categ: string) {
     if (!nom_categ || !descr_categ || /^\s+|\s+$/g.test(nom_categ)
       || /^\s+|\s+$/g.test(descr_categ)) {
@@ -416,6 +656,16 @@ export class GtnProductsPage implements OnInit {
   isEmptyInputGtnIVA(nom_iva: string, valor_iva: any) {
     if (!nom_iva || !valor_iva || /^\s+|\s+$/g.test(nom_iva)
       || /^\s+|\s+$/g.test(valor_iva)) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  isEmptyInputGtnProm(nom_prom: string, descr_prom: string, valor_prom: any) {
+    if (!nom_prom || !descr_prom || !valor_prom || /^\s+|\s+$/g.test(nom_prom)
+      || /^\s+|\s+$/g.test(descr_prom) || /^\s+|\s+$/g.test(valor_prom)) {
       this.alertInputEmpty();
       return false;
     } else {
@@ -494,37 +744,68 @@ export class GtnProductsPage implements OnInit {
     if (this.isEmptyInput(this.codigo_barras, this.nom_producto, this.descrip_prod, this.precio,
       this.unidades_dispon, this.selectedOptionCateg, this.selectedOptionIVA, this.selectedOptionProm)) {
 
-        const url = 'http://localhost:8080/product/modif-product/' + id_prod;
-        const id_categ = this.selectedOptionCateg;
-        const id_promocio = this.selectedOptionProm;
-        const id_categ_iva = this.selectedOptionIVA;
+      const url = 'http://localhost:8080/product/modif-product/' + id_prod;
+      const id_categ = this.selectedOptionCateg;
+      const id_promocio = this.selectedOptionProm;
+      const id_categ_iva = this.selectedOptionIVA;
 
-        const dataProd = JSON.stringify({
-          id_promocion: id_promocio,
-          id_categ: id_categ,
-          id_categ_iva: id_categ_iva,
-          nom_producto: this.nom_producto,
-          descrip_prod: this.descrip_prod,
-          precio: this.precio,
-          unidades_dispon: this.unidades_dispon,
-          codigo_barras: this.codigo_barras,
-        });
-  
-        const headers = {
-          'Content-Type': 'application/json',
-        };
+      const dataProd = JSON.stringify({
+        id_promocion: id_promocio,
+        id_categ: id_categ,
+        id_categ_iva: id_categ_iva,
+        nom_producto: this.nom_producto,
+        descrip_prod: this.descrip_prod,
+        precio: this.precio,
+        unidades_dispon: this.unidades_dispon,
+        codigo_barras: this.codigo_barras,
+        est_producto: 1,
+      });
 
-        this.http.put(url, dataProd, { headers }).subscribe(
-          (response: any) => {
-            this.alertInsertCorrectly();
-            this.closeModalForm();
-            this.loadProducts();
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataProd, { headers }).subscribe(
+        (response: any) => {
+          this.alertInsertCorrectly();
+          this.closeModalForm();
+          this.loadProducts();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
     }
+  }
+
+  deleteProduct(item: any) {
+    const url = 'http://localhost:8080/product/modif-product/' + item.id_producto;
+
+    const dataProd = JSON.stringify({
+      id_promocion: item.id_promocion,
+      id_categ: item.id_categ,
+      id_categ_iva: item.id_categ_iva,
+      nom_producto: item.nom_producto,
+      descrip_prod: item.descrip_prod,
+      precio: item.precio,
+      unidades_dispon: item.unidades_dispon,
+      codigo_barras: item.codigo_barras,
+      est_producto: 0,
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    this.http.put(url, dataProd, { headers }).subscribe(
+      (response: any) => {
+        this.alertDelete();
+        this.loadProducts();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   loadProducts() {
@@ -613,6 +894,13 @@ export class GtnProductsPage implements OnInit {
     this.clearInputsGtnIVA();
   }
 
+  clearSelectionPromGtn() {
+    this.selectedOptPromGtn = null;
+    this.btnNameGtnProm = "Registrar"
+    this.isDisabledBtnElim = true;
+    this.clearInputsGtnProm();
+  }
+
   clearSelectionIVA() {
     this.selectedOptionIVA = null;
   }
@@ -626,7 +914,9 @@ export class GtnProductsPage implements OnInit {
   }
 
   deleteItem(item: any) {
-
+    this.presentAlert(() => {
+      this.deleteProduct(item);
+    }, "el producto")
   }
 
   editItem(item: any) {
