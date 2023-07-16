@@ -340,7 +340,7 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="Categorías"
+                        placeholder="Seleccione categoría para modifcar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptCategGtn"
                         (ionChange)="selectCategChange()"
@@ -396,7 +396,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
-                      >Eliminar
+                      (click)="actionDeleteCateg()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>
@@ -432,7 +432,7 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="IVA"
+                        placeholder="Seleccione IVA para modificar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptIVAGtn"
                         (ionChange)="selectIVAChange()"
@@ -488,7 +488,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
-                      >Eliminar
+                      (click)="actionDeleteIVA()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>
@@ -524,7 +524,7 @@
                     <ion-item class="inputSelectCateg">
                       <ion-select
                         interface="popover"
-                        placeholder="Promoción"
+                        placeholder="Seleccione promoción para modificar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptPromGtn"
                         (ionChange)="selectPromChange()"
@@ -593,7 +593,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-button class="btnVender" [disabled]="isDisabledBtnElim"
-                      >Eliminar
+                      (click)="actionDeleteProm()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>

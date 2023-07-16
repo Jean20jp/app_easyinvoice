@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IonModal } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gtn-products',
@@ -64,7 +64,7 @@ export class GtnProductsPage implements OnInit {
   descr_prom!: string;
   valor_prom!: any;
 
-  constructor(private http: HttpClient, private toastController: ToastController) {
+  constructor(private alertController: AlertController, private http: HttpClient, private toastController: ToastController) {
     this.recoverCategories();
     this.recoverCategIva();
     this.recoverCategProm();
@@ -98,6 +98,36 @@ export class GtnProductsPage implements OnInit {
       color: 'danger' // Color del mensaje de error
     });
     toast.present();
+  }
+
+  async alertDelete() {
+    const toast = await this.toastController.create({
+      message: 'Se eliminó correctamente',
+      duration: 3000, // Duración en milisegundos
+      position: 'bottom', // Posición del mensaje ('top', 'middle', o 'bottom')
+    });
+    toast.present();
+  }
+
+  async presentAlert(action: () => void, msj: any) {
+    const alert = await this.alertController.create({
+      header: '¿Desea eliminar ' + msj + '?',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+        },
+        {
+          text: 'Sí',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            action();
+          }
+        },
+      ]
+    });
+
+    await alert.present();
   }
 
   openModalForm() {
@@ -180,7 +210,6 @@ export class GtnProductsPage implements OnInit {
             this.alertInsertCorrectly();
             this.closeModalFormCateg();
             this.recoverCategories();
-            this.clearSelectionCategGtn();
           }
         },
         (error) => {
@@ -190,15 +219,15 @@ export class GtnProductsPage implements OnInit {
     }
   }
 
-  modificarCategoria(id: string) {
+  modificarCategoria(id_categ: string) {
     if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
 
-      const url = 'http://localhost:8080/category/modif-category/' + id;
+      const url = 'http://localhost:8080/category/modif-category/' + id_categ;
 
       const dataCateg = JSON.stringify({
         nom_categ: this.nom_categ,
         descrip_categ: this.descr_categ,
-        parent_id: null,
+        est_categ: 1,
       });
 
       const headers = {
@@ -210,13 +239,46 @@ export class GtnProductsPage implements OnInit {
           this.alertInsertCorrectly();
           this.closeModalFormCateg();
           this.recoverCategories();
-          this.clearSelectionCategGtn();
         },
         (error) => {
           console.error(error);
         }
       );
     }
+  }
+
+  deleteCategoria(id_categ: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_categ, this.descr_categ)) {
+
+      const url = 'http://localhost:8080/category/modif-category/' + id_categ;
+
+      const dataCateg = JSON.stringify({
+        nom_categ: this.nom_categ,
+        descrip_categ: this.descr_categ,
+        est_categ: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataCateg, { headers }).subscribe(
+        (response: any) => {
+          this.closeModalFormCateg();
+          this.alertDelete();
+          this.recoverCategories();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteCateg() {
+    this.presentAlert(() => {
+      this.deleteCategoria(this.selectedOptCategGtn);
+    }, "la categoría")
   }
 
   insertIVA() {
@@ -238,7 +300,6 @@ export class GtnProductsPage implements OnInit {
             this.alertInsertCorrectly();
             this.closeModalFormIVA();
             this.recoverCategIva();
-            this.clearSelectionIVAGtn();
           }
         },
         (error) => {
@@ -268,13 +329,46 @@ export class GtnProductsPage implements OnInit {
           this.alertInsertCorrectly();
           this.closeModalFormIVA();
           this.recoverCategIva();
-          this.clearSelectionIVAGtn();
         },
         (error) => {
           console.error(error);
         }
       );
     }
+  }
+
+  deleteIVA(id: string) {
+    if (this.isEmptyInputGtnCateg(this.nom_iva, this.valor_iva)) {
+
+      const url = 'http://localhost:8080/iva/modif-iva/' + id;
+
+      const dataIVA = JSON.stringify({
+        nomb_categ_iva: this.nom_iva,
+        valor: this.valor_iva,
+        est_categ_iva: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataIVA, { headers }).subscribe(
+        (response: any) => {
+          this.alertDelete();
+          this.closeModalFormIVA();
+          this.recoverCategIva();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteIVA() {
+    this.presentAlert(() => {
+      this.deleteIVA(this.selectedOptIVAGtn);
+    }, "el IVA")
   }
 
   insertProm() {
@@ -297,7 +391,6 @@ export class GtnProductsPage implements OnInit {
             this.alertInsertCorrectly();
             this.closeModalFormProm();
             this.recoverCategProm();
-            this.clearSelectionPromGtn();
           }
         },
         (error) => {
@@ -328,13 +421,47 @@ export class GtnProductsPage implements OnInit {
           this.alertInsertCorrectly();
           this.closeModalFormProm();
           this.recoverCategProm();
-          this.clearSelectionPromGtn();
         },
         (error) => {
           console.error(error);
         }
       );
     }
+  }
+
+  deleteProm(id: string) {
+    if (this.isEmptyInputGtnProm(this.nom_prom, this.descr_prom, this.valor_prom)) {
+
+      const url = 'http://localhost:8080/promotion/modif-promotion/' + id;
+
+      const dataPromotion = JSON.stringify({
+        nom_prom: this.nom_prom,
+        descrip_prom: this.descr_prom,
+        porcentaje_desc: this.valor_prom,
+        est_prom: 0,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      this.http.put(url, dataPromotion, { headers }).subscribe(
+        (response: any) => {
+          this.alertDelete();
+          this.closeModalFormProm();
+          this.recoverCategProm();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  actionDeleteProm() {
+    this.presentAlert(() => {
+      this.deleteProm(this.selectedOptPromGtn);
+    }, "la promoción")
   }
 
   selectCategChange() {
@@ -631,6 +758,7 @@ export class GtnProductsPage implements OnInit {
         precio: this.precio,
         unidades_dispon: this.unidades_dispon,
         codigo_barras: this.codigo_barras,
+        est_producto: 1,
       });
 
       const headers = {
@@ -648,6 +776,36 @@ export class GtnProductsPage implements OnInit {
         }
       );
     }
+  }
+
+  deleteProduct(item: any) {
+    const url = 'http://localhost:8080/product/modif-product/' + item.id_producto;
+
+    const dataProd = JSON.stringify({
+      id_promocion: item.id_promocion,
+      id_categ: item.id_categ,
+      id_categ_iva: item.id_categ_iva,
+      nom_producto: item.nom_producto,
+      descrip_prod: item.descrip_prod,
+      precio: item.precio,
+      unidades_dispon: item.unidades_dispon,
+      codigo_barras: item.codigo_barras,
+      est_producto: 0,
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    this.http.put(url, dataProd, { headers }).subscribe(
+      (response: any) => {
+        this.alertDelete();
+        this.loadProducts();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   loadProducts() {
@@ -756,7 +914,9 @@ export class GtnProductsPage implements OnInit {
   }
 
   deleteItem(item: any) {
-
+    this.presentAlert(() => {
+      this.deleteProduct(item);
+    }, "el producto")
   }
 
   editItem(item: any) {
