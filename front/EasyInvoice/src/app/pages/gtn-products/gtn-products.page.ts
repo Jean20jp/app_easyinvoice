@@ -588,7 +588,7 @@ export class GtnProductsPage implements OnInit {
 
   setTitleFormProd() {
     this.titleModalForm = "Modificar Producto";
-    this.nameBtnModalForm = "Modificar Producto";
+    this.nameBtnModalForm = "Modificar";
     this.isDisabledInpCodProd = true;
     this.openModalForm();
   }

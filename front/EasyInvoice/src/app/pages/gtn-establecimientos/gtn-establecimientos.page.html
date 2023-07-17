@@ -3,7 +3,7 @@
     <div id="menu" class="menuBtn">
       <ion-menu-button></ion-menu-button>
     </div>
-    <ion-text class="title">Gestión Establecimientos</ion-text>
+    <ion-text class="title">Gestión Usuarios</ion-text>
   </div>
 
   <div>
@@ -15,11 +15,12 @@
               interface="popover"
               placeholder="Seleccione establecimiento"
               [(ngModel)]="selectedOptionEstab"
+              (ionChange)="selectEstabChange()"
             >
               <ion-select-option
                 *ngFor="let option of optionsEstab"
-                [value]="option.id_categ"
-                >{{option.nom_categ}}</ion-select-option
+                [value]="option.id_establecimiento"
+                >{{option.nombre}}</ion-select-option
               >
             </ion-select>
             <ion-icon
@@ -52,7 +53,7 @@
 
     <div>
       <ion-list>
-        <ion-item-sliding *ngFor="let item of items">
+        <ion-item-sliding *ngFor="let item of listFilterUserEstab">
           <ion-item
             class="itemProd"
             (click)="openModalDtVend(item)"
@@ -65,7 +66,7 @@
             </div>
             <ion-label>
               <h2>{{ item.nomb_usuario }} {{item.apell_usuario}}</h2>
-              <p>{{ item.num_ident }}</p>
+              <p>{{ item.num_ident }} - {{item.tip_usuario === 1 ? 'Administrador' : 'Estándar' }}</p>
             </ion-label>
           </ion-item>
 
@@ -125,6 +126,11 @@
                 <ion-row>
                   <ion-col >
                     <ion-text>Cedula: {{selectedItem?.num_ident}}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col >
+                    <ion-text>Tipo usuario: {{selectedItem?.tip_usuario === 1 ? 'Administrador' : 'Estándar'}}</ion-text>
                   </ion-col>
                 </ion-row>
                 <ion-row>

@@ -32,8 +32,8 @@ ion-menu-button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-left: -45px;
-  margin-right: 5%;
+  margin-left: -75px;
+  margin-right: 12%;
 }
 
 .gridGtnPro {
@@ -98,7 +98,7 @@ ion-menu-button {
 }
 
 .modalDt {
-  --height: 65%;
+  --height: 45%;
   --border-radius: 30px;
   margin-left: 20px;
   margin-right: 20px;
@@ -115,7 +115,7 @@ ion-menu-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 12%;
+  height: 13%;
   background-color: #063970;
   width: 100%;
 }
@@ -147,7 +147,8 @@ ion-menu-button {
   height: 90px;
   width: 90px;
   margin-left: 35%;
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom:20px ;
 }
 
 .gridContent {

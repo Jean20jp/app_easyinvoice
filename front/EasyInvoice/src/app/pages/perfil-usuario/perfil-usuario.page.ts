@@ -12,10 +12,13 @@ import { FormControl, Validators } from '@angular/forms';
 export class PerfilUsuarioPage implements OnInit {
 
   private receivedData: any;
+  num_ident!: string;
   names!: string;
   phone!: string;
   email!: string;
   direccion!: string;
+  tip_usuario!: any;
+  estab_per!: string;
 
   passwordCurrent!: string;
   passwordNew!: string;
@@ -40,10 +43,27 @@ export class PerfilUsuarioPage implements OnInit {
 
   initDataUser() {
     this.receivedData = this.dataSharingService.getJsonData();
+    this.getEstabForId(this.receivedData.id_establ_per)
+    this.num_ident = this.receivedData.num_ident;
     this.names = this.receivedData.nomb_usuario + " " + this.receivedData.apell_usuario;
     this.phone = this.receivedData.telef_usuario;
     this.email = this.receivedData.email_usuario;
     this.direccion = this.receivedData.direc_usuario;
+    this.tip_usuario = this.receivedData.tip_usuario;
+  }
+
+  getEstabForId(id_estab: string) {
+    const url = 'http://localhost:8080/establishment/' + id_estab;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.estab_per = response.nombre;
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
   }
 
   isEmptyInput(
