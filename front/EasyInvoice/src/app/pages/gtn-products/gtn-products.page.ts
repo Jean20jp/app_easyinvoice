@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IonModal } from '@ionic/angular';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, IonModal } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-gtn-products',
@@ -33,7 +33,6 @@ export class GtnProductsPage implements OnInit {
 
   showBackdrop: boolean = false;
 
-  itemsClieFilterAux: any[] = [];
   items: any[] = [];
   private listWithOutFilter: any[] = [];
 
@@ -878,8 +877,8 @@ export class GtnProductsPage implements OnInit {
 
   clearSelectionCateg() {
     this.selectedOptionCateg = null;
-
   }
+
   clearSelectionCategGtn() {
     this.selectedOptCategGtn = null;
     this.btnNameGtnCateg = "Registrar"

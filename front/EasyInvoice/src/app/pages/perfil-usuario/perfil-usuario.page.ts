@@ -86,7 +86,6 @@ export class PerfilUsuarioPage implements OnInit {
             estado_usuario: this.receivedData.estado_usuario,
             tip_usuario: this.receivedData.tip_usuario,
             contrasenia: passwordNew,
-            foto: this.receivedData.foto
           });
 
           this.consumeServiceChangePass(dataUser);
