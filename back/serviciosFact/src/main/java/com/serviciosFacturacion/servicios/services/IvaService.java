@@ -1,6 +1,5 @@
 package com.serviciosFacturacion.servicios.services;
 
-import com.serviciosFacturacion.servicios.models.CategoryModel;
 import com.serviciosFacturacion.servicios.models.IvaModel;
 import com.serviciosFacturacion.servicios.repositories.IIVaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
