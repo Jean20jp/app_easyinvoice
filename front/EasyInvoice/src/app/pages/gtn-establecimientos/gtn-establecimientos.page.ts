@@ -66,7 +66,7 @@ export class GtnEstablecimientosPage implements OnInit {
 
   constructor(private alertController: AlertController, private http: HttpClient,
     private toastController: ToastController, private dataSharingService: DataSharingService,) {
-    this.recoverEstab()
+    this.recoverEstab();
   }
 
   ngOnInit() {
@@ -151,6 +151,7 @@ export class GtnEstablecimientosPage implements OnInit {
   }
 
   clearSelectionEstabGtn() {
+    this.selectedOptTiendaGtn = null
     this.selectedOptEstabGtn = null;
     this.btnNameGtnEstab = "Registrar"
     this.isDisabledBtnElim = true;
@@ -177,6 +178,7 @@ export class GtnEstablecimientosPage implements OnInit {
 
   openModalGtnEstab() {
     this.modalGtnEstab.present();
+    this.getTiendas();
   }
 
   openModalDtVend(item: any) {
@@ -194,7 +196,7 @@ export class GtnEstablecimientosPage implements OnInit {
     this.contrasenia = "";
     this.clearSelectionTipDni();
     this.clearSelectionTipUser();
-    this.clearSelectionEstab();
+    this.clearSelectionEstabGtn();
   }
 
   clearInputsGtnEstab() {
@@ -207,6 +209,12 @@ export class GtnEstablecimientosPage implements OnInit {
   selectEstabChange() {
     if (this.selectedOptionEstab) {
       this.getUserForIdEstab(this.selectedOptionEstab);
+    }
+  }
+
+  selectEstabGtnChange() {
+    if (this.selectedOptEstabGtn) {
+      this.recoverEstabForID(this.selectedOptEstabGtn);
     }
   }
 
@@ -245,11 +253,51 @@ export class GtnEstablecimientosPage implements OnInit {
     this.http.get<any[]>(url).subscribe(
       (response) => {
         if (response !== null) {
-          this.optionsEstab = response.filter(est => est.establecimiento !== 0);
+          this.optionsEstab = response.filter(estab => estab.est_establecimiento !== 0);
         }
       },
       (error) => {
         console.error('Error al recuperar ciudades:', error);
+      }
+    );
+  }
+
+  recoverEstabForID(id_estab: string) {
+    const url = 'http://localhost:8080/establishment/' + id_estab;
+    this.http.get<any[]>(url).subscribe(
+      (response: any) => {
+        if (response !== null) {
+          this.selectedOptTiendaGtn = response.id_tienda_per;
+          this.nombre = response.nombre;
+          this.telefono = response.telefono;
+          this.direccion = response.direccion;
+          this.email = response.email;
+          this.btnNameGtnEstab = "Modificar"
+          this.isDisabledBtnElim = false;
+
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
+      }
+    );
+  }
+
+  getTiendas() {
+    const url = 'http://localhost:8080/store/get-stores';
+    this.http.get<any[]>(url).subscribe(
+      (response: any[]) => {
+        if (response !== null) {
+          this.optionsTienda = response;
+          if (this.optionsTienda.length > 1) {
+            this.isDisabledInpTienda = false;
+          } else {
+            this.selectedOptTiendaGtn = response[0].id_tienda;
+          }
+        }
+      },
+      (error) => {
+        console.error('Error al recuperar promoción:', error);
       }
     );
   }
@@ -391,6 +439,100 @@ export class GtnEstablecimientosPage implements OnInit {
     );
   }
 
+  insertEstab() {
+    if (this.isEmptyInputEstab(this.nombre, this.telefono, this.direccion,
+      this.email, this.selectedOptTiendaGtn)) {
+
+      const url = 'http://localhost:8080/establishment/save-establishment';
+
+      const id_tienda_per = this.selectedOptTiendaGtn
+
+      const estabData = JSON.stringify({
+        id_tienda_per: id_tienda_per,
+        nombre: this.nombre,
+        telefono: this.telefono,
+        direccion: this.direccion,
+        email: this.email,
+        est_establecimiento: 1,
+      });
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      this.http.post(url, estabData, { headers }).subscribe(
+        (response) => {
+          if (response != null) {
+            this.alertInsertCorrectly;
+            this.closeModalGtnEstab();
+            this.recoverEstab();
+          }
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }
+
+  updateEstab(id_estab: string) {
+    const url = 'http://localhost:8080/establishment/modif-establishment/' + id_estab;
+    const id_tienda_per = this.selectedOptTiendaGtn
+
+    const estabData = JSON.stringify({
+      id_tienda_per: id_tienda_per,
+      nombre: this.nombre,
+      telefono: this.telefono,
+      direccion: this.direccion,
+      email: this.email,
+      est_establecimiento: 1,
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    this.http.put(url, estabData, { headers }).subscribe(
+      (response: any) => {
+        this.alertInsertCorrectly();
+        this.closeModalGtnEstab();
+        this.recoverEstab();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  deleteEstab(id_estab: string) {
+    const url = 'http://localhost:8080/establishment/modif-establishment/' + id_estab;
+    const id_tienda_per = this.selectedOptTiendaGtn
+
+    const estabData = JSON.stringify({
+      id_tienda_per: id_tienda_per,
+      nombre: this.nombre,
+      telefono: this.telefono,
+      direccion: this.direccion,
+      email: this.email,
+      est_establecimiento: 0,
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    this.http.put(url, estabData, { headers }).subscribe(
+      (response: any) => {
+        this.alertDelete();
+        this.closeModalGtnEstab();
+        this.recoverEstab();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
 
   isEmptyInput(num_ident: string, nomb_usuario: string, apell_usuario: string, email_usuario: string, telef_usuario: string,
     direc_usuario: string, contrasenia: string, selectedTipDni: string, selectedEstab: string, selectedTipUser: string) {
@@ -400,6 +542,19 @@ export class GtnEstablecimientosPage implements OnInit {
       || /^\s+|\s+$/g.test(apell_usuario) || /^\s+|\s+$/g.test(email_usuario) || /^\s+|\s+$/g.test(telef_usuario)
       || /^\s+|\s+$/g.test(direc_usuario) || /^\s+|\s+$/g.test(contrasenia)
       || selectedTipDni === undefined || selectedTipUser === undefined || selectedEstab === undefined) {
+      this.alertInputEmpty();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  isEmptyInputEstab(nombre: string, telefono: string, direccion: string,
+    email: string, selectedEstab: string) {
+
+    if (!nombre || !telefono || !direccion || !email || /^\s+|\s+$/g.test(nombre)
+      || /^\s+|\s+$/g.test(telefono) || /^\s+|\s+$/g.test(direccion)
+      || /^\s+|\s+$/g.test(email) || selectedEstab === undefined) {
       this.alertInputEmpty();
       return false;
     } else {
@@ -482,16 +637,16 @@ export class GtnEstablecimientosPage implements OnInit {
 
   handleBtnGtnProm() {
     if (this.btnNameGtnEstab === 'Registrar') {
-      //this.insertProm();
+      this.insertEstab();
     } else {
-      //this.modificarProm(this.selectedOptPromGtn);
+      this.updateEstab(this.selectedOptEstabGtn);
     }
   }
 
-  actionDeleteProm() {
-    //this.presentAlert(() => {
-    //  this.deleteProm(this.selectedOptPromGtn);
-    //}, "la promoción")
+  actionDeleteEstab() {
+    this.presentAlert(() => {
+      this.deleteEstab(this.selectedOptEstabGtn);
+    }, "el establecimiento")
   }
 
   editItem(item: any) {
@@ -501,7 +656,7 @@ export class GtnEstablecimientosPage implements OnInit {
 
   deleteItem(item: any) {
     this.presentAlert(() => {
-     this.deleteUser(item);
+      this.deleteUser(item);
     }, "el usuario")
   }
 }

@@ -383,12 +383,12 @@
                         placeholder="Seleccione establecimiento para modificar o eliminar"
                         style="margin-top: -10px; margin-bottom: -10px"
                         [(ngModel)]="selectedOptEstabGtn"
-                        (ionChange)="selectEstabChange()"
+                        (ionChange)="selectEstabGtnChange()"
                       >
                         <ion-select-option
                           *ngFor="let option of optionsEstab"
-                          [value]="option.id_prom"
-                          >{{option.nom_prom}}</ion-select-option
+                          [value]="option.id_establecimiento"
+                          >{{option.nombre}}</ion-select-option
                         >
                       </ion-select>
                       <ion-icon
@@ -484,7 +484,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-button style="margin-top: 5px;" class="btnModalForm" [disabled]="isDisabledBtnElim"
-                      (click)="actionDeleteProm()" >Eliminar
+                      (click)="actionDeleteEstab()" >Eliminar
                     </ion-button>
                   </ion-col>
                 </ion-row>
