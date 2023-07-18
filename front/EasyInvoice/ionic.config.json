@@ -1,7 +1,0 @@
-{
-  "name": "EasyInvoice",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
