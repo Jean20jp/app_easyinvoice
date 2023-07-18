@@ -7,25 +7,33 @@
   </div>
 
   <div class="contentUser">
-    <ion-icon
-      name="person-circle-outline"
+    <ion-img
+      src="assets/icon-user.png"
       size="large"
-      color="#063970"
       class="logo"
-    ></ion-icon>
+    ></ion-img>
 
     <ion-grid style="--ion-grid-padding: 0">
       <ion-row style="margin-bottom: 15px">
         <ion-col size="auto">
           <ion-text style="color: black; width: auto"
-            >Nombres de usuario: {{ names }}</ion-text
+            >Establecimiento: {{ estab_per }}</ion-text
           >
         </ion-col>
-        <ion-col class="custom-col">
-          <ion-text
-            (click)="editUsername()"
-            style="cursor: pointer; text-decoration: underline; color: #063970"
-            >editar</ion-text
+      </ion-row>
+      
+      <ion-row style="margin-bottom: 15px">
+        <ion-col size="auto">
+          <ion-text style="color: black; width: auto"
+            >Número de identificación: {{ num_ident }}</ion-text
+          >
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="margin-bottom: 15px">
+        <ion-col size="auto">
+          <ion-text style="color: black; width: auto"
+            >Nombres de usuario: {{ names }}</ion-text
           >
         </ion-col>
       </ion-row>
@@ -36,26 +44,20 @@
             >Teléfono: {{ phone }}</ion-text
           >
         </ion-col>
-        <ion-col class="custom-col">
-          <ion-text
-            (click)="editPhone()"
-            style="cursor: pointer; text-decoration: underline; color: #063970"
-            >editar</ion-text
-          >
-        </ion-col>
       </ion-row>
 
-      <ion-row style="margin-bottom: 30px">
+      <ion-row style="margin-bottom: 15px">
         <ion-col size="auto">
           <ion-text style="color: black; width: auto"
             >Correo Electrónico: {{ email }}</ion-text
           >
         </ion-col>
-        <ion-col class="custom-col">
-          <ion-text
-            (click)="editEmail()"
-            style="cursor: pointer; text-decoration: underline; color: #063970"
-            >editar</ion-text
+      </ion-row>
+
+      <ion-row style="margin-bottom: 15px">
+        <ion-col size="auto">
+          <ion-text style="color: black; width: auto"
+            >Tipo usuario: {{ tip_usuario === 1 ? 'Administrador' : 'Estándar' }}</ion-text
           >
         </ion-col>
       </ion-row>
@@ -64,13 +66,6 @@
         <ion-col size="auto">
           <ion-text style="color: black; width: auto"
             >Direccion: {{ direccion }}</ion-text
-          >
-        </ion-col>
-        <ion-col class="custom-col">
-          <ion-text
-            (click)="editUsername()"
-            style="cursor: pointer; text-decoration: underline; color: #063970"
-            >editar</ion-text
           >
         </ion-col>
       </ion-row>

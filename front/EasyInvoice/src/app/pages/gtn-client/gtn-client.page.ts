@@ -240,10 +240,12 @@ export class GtnClientPage implements OnInit {
     if (this.isEmptyInput(this.num_ident, this.nomb_cli, this.apell_cli, this.email_cli,
       this.direc_cli, this.telef_cli, this.selectedTipDni)) {
 
+      const id_tip_dni = this.getIdTipDni(this.selectedTipDni);
+
       const url = 'http://localhost:8080/customer/modif-customer/' + id_clie;
 
       const dataClient = JSON.stringify({
-        id_tip_dni: this.selectedTipDni,
+        id_tip_dni: id_tip_dni,
         num_ident: this.num_ident,
         nomb_cli: this.nomb_cli,
         apell_cli: this.apell_cli,

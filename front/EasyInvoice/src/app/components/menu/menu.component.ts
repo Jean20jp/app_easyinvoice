@@ -7,18 +7,29 @@ import { DataSharingService } from '../../services/data-sharing.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
+  
   public items = [
     { name: 'Perfil', image: 'assets/icon/icon-perfil.svg', redirect:"perfil-usuario"},
-    { name: 'Gestión \nProductos', image: 'assets/icon/icon-gtnproducts.svg', redirect:"gtn-products" },
-    { name: 'Gestión \nClientes', image: 'assets/icon/icon-gtnclient.svg', redirect:"gtn-client" },
+    { name: 'Gestión Productos', image: 'assets/icon/icon-gtnproducts.svg', redirect:"gtn-products" },
+    { name: 'Gestión Clientes', image: 'assets/icon/icon-gtnclient.svg', redirect:"gtn-client" },
     { name: 'Facturar', image: 'assets/icon/icon-facturar.svg', redirect:"#" },
-    { name: 'Gestión \nEstablecimiento', image: 'assets/icon/icon-gtnestablec.svg' , redirect:"#"},
+    { name: 'Administrador', image: 'assets/icon/icon-gtnestablec.svg' , redirect:"gtn-establecimientos"},
+    { name: 'Cerrar Sesión', image: 'assets/icon/icon-logout.svg', redirect:"login" }
+  ];
+
+  public itemsUserStand = [
+    { name: 'Perfil', image: 'assets/icon/icon-perfil.svg', redirect:"perfil-usuario"},
+    { name: 'Gestión Productos', image: 'assets/icon/icon-gtnproducts.svg', redirect:"gtn-products" },
+    { name: 'Gestión Clientes', image: 'assets/icon/icon-gtnclient.svg', redirect:"gtn-client" },
+    { name: 'Facturar', image: 'assets/icon/icon-facturar.svg', redirect:"#" },
     { name: 'Cerrar Sesión', image: 'assets/icon/icon-logout.svg', redirect:"login" }
   ];
 
   private receivedData: any;
   namesUser!: string;
   rolUser!: string;
+
+  usuarioLogueado!: boolean;
 
   constructor(private dataSharingService: DataSharingService) {}
 
@@ -30,8 +41,10 @@ export class MenuComponent implements OnInit {
     const tipUser = this.receivedData.tip_usuario;
     if (tipUser === 1) {
       this.rolUser = "Administrador"
+      this.usuarioLogueado=true;
     } else {
-      this.rolUser = "Vendedor"
+      this.rolUser = "Estándar"
+      this.usuarioLogueado=false;
     }
   }
 
