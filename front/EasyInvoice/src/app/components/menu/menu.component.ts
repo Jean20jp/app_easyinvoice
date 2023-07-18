@@ -21,7 +21,7 @@ export class MenuComponent implements OnInit {
     { name: 'Perfil', image: 'assets/icon/icon-perfil.svg', redirect:"perfil-usuario"},
     { name: 'Gestión Productos', image: 'assets/icon/icon-gtnproducts.svg', redirect:"gtn-products" },
     { name: 'Gestión Clientes', image: 'assets/icon/icon-gtnclient.svg', redirect:"gtn-client" },
-    { name: 'Facturar', image: 'assets/icon/icon-facturar.svg', redirect:"#" },
+    { name: 'Facturar', image: 'assets/icon/icon-facturar.svg', redirect:"gtn-factura" },
     { name: 'Cerrar Sesión', image: 'assets/icon/icon-logout.svg', redirect:"login" }
   ];
 

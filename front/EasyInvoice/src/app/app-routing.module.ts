@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'gtn-establecimientos',
     loadChildren: () => import('./pages/gtn-establecimientos/gtn-establecimientos.module').then( m => m.GtnEstablecimientosPageModule)
   },
+  {
+    path: 'gtn-facturas',
+    loadChildren: () => import('./pages/gtn-facturas/gtn-facturas.module').then( m => m.GtnFacturasPageModule)
+  },
 
 ];
 

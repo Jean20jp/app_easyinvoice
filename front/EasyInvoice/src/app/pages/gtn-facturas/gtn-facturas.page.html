@@ -1,0 +1,227 @@
+<ion-content>
+  <div class="head">
+    <div id="menu" class="menuBtn">
+      <ion-menu-button></ion-menu-button>
+    </div>
+    <ion-text class="title">Gestión Facturas</ion-text>
+  </div>
+
+  <div>
+    <ion-searchbar
+    class="search"
+    show-clear-button="focus"
+    placeholder="Buscar por número de identificación.."
+    (ionInput)="onSearchChange($event)"
+  ></ion-searchbar>
+
+  <div>
+    <ion-list>
+      <ion-item-sliding *ngFor="let item of items">
+        <ion-item
+          class="itemClie"
+          (click)="openModalDtFact(item)"
+        >
+          <div class="imgIcon">
+            <ion-img src="assets/icon-factura.png" slot="start"></ion-img>
+          </div>
+          <ion-label>
+            <h2>{{ item.num_comprob}} </h2>
+            <p>{{ item.total }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option
+            color="warning"
+            expandable
+            (click)="archivarItem(item)"
+          >
+          <ion-icon size="large" style="margin-right: 10px; margin-left: 10px;" name="archive-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom" style="right: 7%; bottom: 3%;">
+    <ion-fab-button (click)="openModalFact()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</div>
+
+<div>
+  <ion-modal class="modalDt" #modalDtFact [showBackdrop]="showBackdrop">
+    <ng-template>
+      <ion-content>
+        <div class="modalDtClie">
+          <div class="headModal">
+            <ion-text class="titleModal"> Detalle Factura </ion-text>
+          </div>
+
+          <div>
+            <ion-grid class="gridContent">
+              <ion-row>
+                <ion-col>
+                  <ion-text>N° Factura: {{selectedItem?.num_ident}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text
+                    >Vendedor: {{selectedItem?.nomb_cli}}
+                    {{selectedItem?.apell_cli}}</ion-text
+                  >
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text
+                    >N° Identificación: {{selectedItem?.email_cli}}</ion-text
+                  >
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text>Nombres Clientes: {{selectedItem?.direc_cli}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text>Fecha Emision: {{selectedItem?.telef_cli}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text>Estado:
+                   {{selectedItem?.telef_cli}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text>Tipo Pago: {{selectedItem?.telef_cli}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text>Total: {{selectedItem?.telef_cli}}</ion-text>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</div>
+
+<div>
+  <ion-modal class="modalForm" #modalForm>
+    <ng-template>
+      <ion-content>
+        <div class="modalContentForm">
+          <div class="headModalForm">
+            <div>
+              <ion-icon style="margin-right: 50px; margin-left: -80px;"
+                class="iconBack"
+                name="chevron-back-outline"
+                (click)="goBack()"
+              ></ion-icon>
+            </div>
+            <ion-text class="titleModal">Emitir Factura</ion-text>
+          </div>
+
+          <div class="contentForm">
+            <ion-grid>
+
+              <ion-row>
+                <ion-col style="margin-right: 60%;">
+                  <ion-text style="font-weight: bold; font-size: 19px; color: white;">Factura</ion-text>
+                </ion-col>
+                <ion-col>
+                  <ion-toggle color="success" style="margin-top: 5px;" [checked]="true"></ion-toggle>
+                </ion-col>
+              </ion-row>
+
+              <ion-row style="margin-top: 30px;">
+                <ion-col style="margin-right: 52%;">
+                   <ion-text style="font-weight: bold; font-size: 19px; color: white;">Productos</ion-text>
+                </ion-col>
+                <ion-col>
+                  <ion-text style="font-size: 14px; color: white;">1</ion-text>
+                  <ion-icon style="color: white; font-size: 34px; font-weight: bold;" name="cart-outline"></ion-icon>
+                </ion-col>
+              </ion-row>
+
+              <ion-row style="margin-top: 20px;">
+                <ion-col>
+                  <ion-searchbar
+                  class="searchDinamic"
+                  show-clear-button="focus"
+                  placeholder="Buscar por número de identificación.." (ionChange)="filterListClients($event)"></ion-searchbar>
+                </ion-col>
+                <ion-col>
+                  <ion-icon style="color: white; font-size: 34px; margin-top: 16px;" name="person-add-outline"></ion-icon>
+                </ion-col>
+              </ion-row>
+
+              <ion-row style="margin-top: 20px;">
+                <ion-col>
+                  <ion-item class="inputSelectSmall">
+                    <ion-select
+                      interface="popover"
+                      placeholder="Tipo de pago"
+                      [(ngModel)]="selectedTipPago"
+                    >
+                      <ion-select-option
+                        *ngFor="let option of optionsTipPago"
+                        [value]="option"
+                        >{{option}}</ion-select-option
+                      >
+                    </ion-select>
+                    <ion-icon
+                      name="close-circle"
+                      (click)="clearSelectionTipPago()"
+                      *ngIf="selectedTipPago"
+                    ></ion-icon>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              
+              <ion-row style="margin-top: 20px;">
+                <ion-col>
+                  <ion-text style="font-weight: bold; font-size: 17px; color: white">Fecha</ion-text>
+                </ion-col>
+              </ion-row>
+              
+              <ion-row>
+                <ion-col style="text-align: center;">
+                  <ion-text style="font-weight: bold; font-size: 72px; color: white" >0.00</ion-text>
+                </ion-col>
+              </ion-row>
+
+              <ion-row style="margin-top: -10px;">
+                <ion-col style="text-align: center;">
+                  <ion-text style="font-weight: bold; font-size: 14px; color: white" >Total</ion-text>
+                </ion-col>
+              </ion-row>
+
+              <ion-row style="margin-top: 40px;">
+                <ion-col>
+                  <ion-button class="btnRegistrar" (click)="emitirCompr()"
+                    >Emitir comprobante
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</div>
+
+
+
+</ion-content>
